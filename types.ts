@@ -403,4 +403,16 @@ export interface CustomerOrder {
   returnReason?: string;
   returnType?: 'EXCHANGE_SIZE' | 'REFUND';
   exchangeSize?: string;
+  returnStatus?: 'PENDING' | 'APPROVED' | 'REFUNDED' | 'REJECTED';
+  returnNote?: string;
+}
+
+export interface UserNotification {
+  id: string;
+  title: string;
+  message: string;
+  date: string;
+  read: boolean;
+  type: 'RETURN' | 'ORDER' | 'SYSTEM' | 'VIP';
+  orderId?: string;
 }

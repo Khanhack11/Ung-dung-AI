@@ -3,7 +3,7 @@ import Header from './Header';
 import HeroBanner from './HeroBanner';
 import ProductGrid from './ProductGrid';
 import Footer from './Footer';
-import { ProductDetail, CartItem, CustomerProfile } from '../../types';
+import { ProductDetail, CartItem, CustomerProfile, UserNotification } from '../../types';
 
 interface ShopeeHomePageProps {
   onProductClick?: (id: string) => void;
@@ -38,6 +38,9 @@ interface ShopeeHomePageProps {
   onAddToCart?: (item: CartItem) => void;
   customerProfile?: CustomerProfile | null;
   customerOrders?: any[];
+  notifications?: UserNotification[];
+  onMarkNotificationRead?: (id: string) => void;
+  onClearNotifications?: () => void;
 }
 
 const ShopeeHomePage: React.FC<ShopeeHomePageProps> = (props) => {
@@ -71,6 +74,9 @@ const ShopeeHomePage: React.FC<ShopeeHomePageProps> = (props) => {
         onNavigateSeller={props.onNavigateSeller}
         onSwitchRole={props.onSwitchRole}
         onSwitchWorkspace={props.onSwitchWorkspace}
+        notifications={props.notifications}
+        onMarkNotificationRead={props.onMarkNotificationRead}
+        onClearNotifications={props.onClearNotifications}
       />
       
       <main className="pb-10">

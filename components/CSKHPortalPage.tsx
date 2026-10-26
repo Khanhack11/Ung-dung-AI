@@ -784,7 +784,16 @@ export const CSKHPortalPage: React.FC<CSKHPortalPageProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-200/70">
-                    {filteredReturnRequests.map((req) => (
+                    {filteredReturnRequests.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="text-center py-12 text-stone-400">
+                          <RotateCcw size={32} className="mx-auto mb-2 opacity-40 text-stone-400" />
+                          <p className="font-bold text-stone-600">Hiện không có yêu cầu đổi trả nào</p>
+                          <p className="text-[11px] text-stone-400 mt-0.5">Khi khách hàng gửi yêu cầu đổi size hoặc trả hàng, hồ sơ sẽ lập tức xuất hiện tại đây.</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredReturnRequests.map((req) => (
                       <tr key={req.id} className="hover:bg-stone-100/80 transition-colors">
                         <td className="p-4">
                           <span className="font-mono font-black text-rose-700 block">{req.id}</span>
@@ -806,8 +815,16 @@ export const CSKHPortalPage: React.FC<CSKHPortalPageProps> = ({
                           {new Intl.NumberFormat('vi-VN').format(req.refundAmount)}₫
                         </td>
                         <td className="p-4">
-                          <span className="px-2.5 py-1 bg-amber-100 text-amber-900 rounded-full font-bold text-[10px]">
-                            {req.status === 'PENDING' ? 'Chờ duyệt đổi máy' : req.status === 'APPROVED' ? 'Đã chuyển Kho kiểm định' : 'Đã hoàn tất'}
+                          <span className={`px-2.5 py-1 rounded-full font-bold text-[10px] ${
+                            req.status === 'PENDING' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                            req.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
+                            req.status === 'REFUNDED' ? 'bg-blue-100 text-blue-900 border border-blue-300' :
+                            'bg-rose-100 text-rose-900 border border-rose-300'
+                          }`}>
+                            {req.status === 'PENDING' ? '⏳ Chờ duyệt đổi máy' : 
+                             req.status === 'APPROVED' ? '✓ Đã duyệt Đổi 1-1' : 
+                             req.status === 'REFUNDED' ? '💰 Đã hoàn tiền & thu hồi điểm' : 
+                             '✕ Bị từ chối'}
                           </span>
                         </td>
                         <td className="p-4 text-right">
@@ -815,23 +832,45 @@ export const CSKHPortalPage: React.FC<CSKHPortalPageProps> = ({
                             <div className="flex items-center justify-end gap-1.5">
                               <button
                                 onClick={() => onProcessReturn(req.id, 'APPROVE')}
-                                className="px-3 py-1.5 bg-[#1e1d1a] text-[#e5c9a3] rounded-lg font-bold text-[11px] cursor-pointer"
+                                className="px-3 py-1.5 bg-[#1e1d1a] hover:bg-black text-[#e5c9a3] rounded-lg font-bold text-[11px] cursor-pointer shadow-sm transition-all"
+                                title="Phê duyệt đổi máy mới 1-1 cho khách"
                               >
                                 Duyệt Đổi Máy 1-1
                               </button>
                               <button
                                 onClick={() => onProcessReturn(req.id, 'REFUND_AND_CLAWBACK')}
-                                className="px-3 py-1.5 bg-emerald-700 text-white rounded-lg font-bold text-[11px] cursor-pointer"
+                                className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-bold text-[11px] cursor-pointer shadow-sm transition-all"
+                                title="Hoàn lại tiền và thu hồi điểm tích lũy của khách"
                               >
                                 Hoàn Tiền Ngay
                               </button>
+                              <button
+                                onClick={() => onProcessReturn(req.id, 'REJECT')}
+                                className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-lg font-bold text-[11px] cursor-pointer transition-all"
+                                title="Từ chối yêu cầu đổi trả"
+                              >
+                                Từ Chối
+                              </button>
+                            </div>
+                          ) : req.status === 'APPROVED' ? (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <span className="text-[11px] text-emerald-700 font-bold">✓ Đã xuất lệnh đổi</span>
+                              <button
+                                onClick={() => onProcessReturn(req.id, 'REFUND_AND_CLAWBACK')}
+                                className="px-2.5 py-1 bg-blue-700 hover:bg-blue-800 text-white rounded-lg font-bold text-[10px] cursor-pointer"
+                                title="Chuyển sang hoàn tiền nếu khách không muốn đổi máy"
+                              >
+                                Chuyển Hoàn Tiền
+                              </button>
                             </div>
                           ) : (
-                            <span className="text-[11px] text-emerald-700 font-bold">Đã xử lý</span>
+                            <span className="text-[11px] text-stone-500 font-bold">
+                              {req.status === 'REFUNDED' ? '✓ Đã hoàn tất' : '✕ Đã từ chối'}
+                            </span>
                           )}
                         </td>
                       </tr>
-                    ))}
+                    )))}
                   </tbody>
                 </table>
               </div>

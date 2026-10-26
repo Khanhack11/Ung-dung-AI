@@ -6,7 +6,7 @@ import {
   Loader2, ShieldCheck, RotateCcw, Award, Sparkles, 
   Ticket, X, Check, Zap, Tag
 } from 'lucide-react';
-import { CartItem, UserRole, ProductDetail } from '../types';
+import { CartItem, UserRole, ProductDetail, UserNotification } from '../types';
 import Header from './ZShop/Header';
 
 interface ProductDetailPageProps {
@@ -42,6 +42,9 @@ interface ProductDetailPageProps {
   onNavigateSeller?: (tab?: 'overview' | 'products' | 'orders' | 'profile') => void;
   onSwitchRole?: (role: any) => void;
   onSwitchWorkspace?: (workspace: any) => void;
+  notifications?: UserNotification[];
+  onMarkNotificationRead?: (id: string) => void;
+  onClearNotifications?: () => void;
 }
 
 const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ 
@@ -76,7 +79,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     onNavigateCSKH,
     onNavigateSeller,
     onSwitchRole,
-    onSwitchWorkspace
+    onSwitchWorkspace,
+    notifications,
+    onMarkNotificationRead,
+    onClearNotifications
 }) => {
   // Data Layer
   const [product, setProduct] = useState<ProductDetail | null>(null);
@@ -428,6 +434,9 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           onNavigateSeller={onNavigateSeller}
           onSwitchRole={onSwitchRole}
           onSwitchWorkspace={onSwitchWorkspace}
+          notifications={notifications}
+          onMarkNotificationRead={onMarkNotificationRead}
+          onClearNotifications={onClearNotifications}
       />
 
       {/* Breadcrumbs */}

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, ShoppingCart, Bell, PackageOpen, ArrowRight, X } from 'lucide-react';
 import { SanPhamAdminService, matchSearchKeyword, enrichProduct } from '../../services';
-import { ProductDetail } from '../../types';
+import { ProductDetail, UserNotification } from '../../types';
 import PortalTopBar, { PortalWorkspace } from '../PortalTopBar';
 
 interface HeaderProps {
@@ -32,6 +32,9 @@ interface HeaderProps {
   onNavigateCSKH?: (tab?: 'RETURNS' | 'CUSTOMERS' | 'POS' | 'TRACKING') => void;
   onNavigateSeller?: (tab?: 'overview' | 'products' | 'orders' | 'profile') => void;
   onSwitchRole?: (role: any) => void;
+  notifications?: UserNotification[];
+  onMarkNotificationRead?: (id: string) => void;
+  onClearNotifications?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -61,7 +64,10 @@ const Header: React.FC<HeaderProps> = ({
   onNavigateAdminTab,
   onNavigateCSKH,
   onNavigateSeller,
-  onSwitchRole
+  onSwitchRole,
+  notifications = [],
+  onMarkNotificationRead,
+  onClearNotifications
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<ProductDetail[]>([]);
@@ -141,6 +147,18 @@ const Header: React.FC<HeaderProps> = ({
       setSearchResults([]);
       window.dispatchEvent(new CustomEvent('zshop:search', { detail: { keyword: '' } }));
   };
+
+  const activeNotifications: UserNotification[] = notifications && notifications.length > 0 
+    ? notifications 
+    : (() => {
+        try {
+          const saved = localStorage.getItem('zshop_notifications');
+          if (saved) return JSON.parse(saved);
+        } catch (e) {}
+        return [];
+      })();
+
+  const unreadCount = activeNotifications.filter(n => !n.read).length;
 
   return (
     <>
@@ -225,38 +243,102 @@ const Header: React.FC<HeaderProps> = ({
             </span>
           </div>
         <div className="flex space-x-4 items-center">
-          {/* Thông báo gọn gàng với icon vector cố định kích thước */}
+          {/* Thông báo thông minh với icon vector & badge real-time */}
           <div className="relative" ref={voucherRef}>
             <button 
               onClick={() => setIsVoucherOpen(!isVoucherOpen)}
-              className="flex items-center gap-1 hover:text-[#e5c9a3] focus:outline-none cursor-pointer"
+              className="flex items-center gap-1 hover:text-[#e5c9a3] focus:outline-none cursor-pointer relative"
+              title="Xem thông báo hệ thống & tiến độ đơn hàng"
             >
-              <Bell size={14} /> Thông báo
+              <Bell size={14} className={unreadCount > 0 ? 'text-amber-400' : ''} /> 
+              <span>Thông báo</span>
+              {unreadCount > 0 && (
+                <span className="ml-0.5 px-1.5 py-0.2 text-[10px] bg-rose-600 text-white font-black rounded-full shadow-sm animate-pulse">
+                  {unreadCount}
+                </span>
+              )}
             </button>
             {isVoucherOpen && (
-              <div className="absolute right-0 top-full mt-2 w-72 bg-[#faf8f5] rounded-xl shadow-2xl border border-[#e5e0d5] py-2 z-50 text-stone-800">
-                <div className="px-4 py-2 border-b border-[#e5e0d5] text-xs font-bold uppercase tracking-wider text-[#8c6f46]">
-                  Thông báo Thế Giới iPhone
+              <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-[#faf8f5] rounded-2xl shadow-2xl border border-[#d4b996]/60 py-2.5 z-50 text-stone-800 animate-fade-in">
+                <div className="px-4 py-2 border-b border-[#e5e0d5] flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black uppercase tracking-wider text-[#8c6f46]">
+                      Thông báo Thế Giới iPhone
+                    </span>
+                    {unreadCount > 0 && (
+                      <span className="px-2 py-0.5 bg-rose-100 text-rose-800 text-[10px] font-bold rounded-full">
+                        {unreadCount} mới
+                      </span>
+                    )}
+                  </div>
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onClearNotifications?.();
+                      }}
+                      className="text-[11px] text-[#8c6f46] hover:text-[#5c4627] font-bold cursor-pointer underline underline-offset-2"
+                    >
+                      Đã đọc tất cả
+                    </button>
+                  )}
                 </div>
-                <div className="max-h-[260px] overflow-y-auto divide-y divide-stone-100">
-                  <div className="px-4 py-3 hover:bg-stone-100/70 cursor-pointer flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-[#f3ede2] border border-[#d4b996] text-[#8c6f46] flex items-center justify-center shrink-0 font-black text-sm">
-                      📱
+
+                <div className="max-h-[360px] overflow-y-auto divide-y divide-stone-100">
+                  {activeNotifications.length === 0 ? (
+                    <div className="py-8 text-center text-stone-400 text-xs">
+                      <Bell size={24} className="mx-auto mb-1.5 opacity-40" />
+                      Không có thông báo mới nào
                     </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-stone-900">Sẵn hàng iPhone 18 Pro Max VN/A</p>
-                      <p className="text-[11px] text-stone-600 mt-0.5 leading-snug">Bản màu Đỏ Rượu Vang Burgundy & Xanh Glacier Titan mới nhất 2026, giao hỏa tốc 2h.</p>
-                    </div>
-                  </div>
-                  <div className="px-4 py-3 hover:bg-stone-100/70 cursor-pointer flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0 font-black text-sm">
-                      🎁
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-stone-900">Ưu đãi Thế Giới iPhone</p>
-                      <p className="text-[11px] text-stone-600 mt-0.5 leading-snug">Thu cũ đổi mới trợ giá tới 3 triệu & miễn phí ship toàn quốc.</p>
-                    </div>
-                  </div>
+                  ) : (
+                    activeNotifications.map((notif) => (
+                      <div 
+                        key={notif.id}
+                        onClick={() => {
+                          onMarkNotificationRead?.(notif.id);
+                          if (notif.orderId && onViewOrders) {
+                            setIsVoucherOpen(false);
+                            onViewOrders();
+                          }
+                        }}
+                        className={`px-4 py-3 hover:bg-stone-100/90 cursor-pointer flex items-start gap-3 transition-colors ${
+                          !notif.read ? 'bg-amber-50/70' : 'bg-transparent'
+                        }`}
+                      >
+                        <div className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 font-black text-sm shadow-2xs ${
+                          notif.type === 'RETURN' ? 'bg-rose-50 border-rose-200 text-rose-700' :
+                          notif.type === 'VIP' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                          notif.type === 'ORDER' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                          'bg-[#f3ede2] border-[#d4b996] text-[#8c6f46]'
+                        }`}>
+                          {notif.type === 'RETURN' ? '🔄' :
+                           notif.type === 'VIP' ? '⭐' :
+                           notif.type === 'ORDER' ? '📦' : '📱'}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-1">
+                            <p className="text-xs font-bold text-stone-900 leading-tight">
+                              {notif.title}
+                            </p>
+                            {!notif.read && (
+                              <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-stone-600 mt-1 leading-snug">
+                            {notif.message}
+                          </p>
+                          <div className="flex items-center justify-between mt-1.5 text-[10px] text-stone-400">
+                            <span>{notif.date}</span>
+                            {notif.orderId && (
+                              <span className="font-mono text-[#8c6f46] font-bold">
+                                #{notif.orderId} (Xem đơn)
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}

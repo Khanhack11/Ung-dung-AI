@@ -5,7 +5,7 @@ import {
   AlertCircle, QrCode, FileText, 
   Sparkles, RefreshCw, Phone, Camera, Info
 } from 'lucide-react';
-import { CustomerOrder, CustomerOrderItem, CustomerReview, OrderStatus, CustomerProfile, UserRole } from '../types';
+import { CustomerOrder, CustomerOrderItem, CustomerReview, OrderStatus, CustomerProfile, UserRole, UserNotification } from '../types';
 import Header from './ZShop/Header';
 
 interface MyOrdersPageProps {
@@ -39,6 +39,9 @@ interface MyOrdersPageProps {
   onNavigateSeller?: (tab?: 'overview' | 'products' | 'orders' | 'profile') => void;
   onSwitchRole?: (role: any) => void;
   onSwitchWorkspace?: (workspace: any) => void;
+  notifications?: UserNotification[];
+  onMarkNotificationRead?: (id: string) => void;
+  onClearNotifications?: () => void;
 }
 
 type OrderTab = 'ALL' | 'PENDING' | 'SHIPPING' | 'DELIVERED' | 'RETURNS' | 'CANCELLED';
@@ -73,7 +76,10 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
   onNavigateCSKH,
   onNavigateSeller,
   onSwitchRole,
-  onSwitchWorkspace
+  onSwitchWorkspace,
+  notifications,
+  onMarkNotificationRead,
+  onClearNotifications
 }) => {
   const [activeTab, setActiveTab] = useState<OrderTab>('ALL');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
@@ -219,6 +225,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
         onNavigateSeller={onNavigateSeller}
         onSwitchRole={onSwitchRole}
         onSwitchWorkspace={onSwitchWorkspace}
+        notifications={notifications}
+        onMarkNotificationRead={onMarkNotificationRead}
+        onClearNotifications={onClearNotifications}
       />
 
       {/* Hero Sub-header */}
@@ -410,32 +419,44 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
                     {/* Status Badge */}
                     <div>
-                      {isDelivered && (
+                      {order.returnStatus === 'PENDING' ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-800 border border-amber-300 rounded-full text-xs font-bold animate-pulse">
+                          <Clock size={14} className="text-amber-600" /> ĐANG CHỜ CSKH XÉT DUYỆT
+                        </span>
+                      ) : order.returnStatus === 'APPROVED' ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-full text-xs font-bold">
+                          <CheckCircle size={14} className="text-emerald-600" /> CSKH ĐÃ DUYỆT 1-ĐỔI-1
+                        </span>
+                      ) : order.returnStatus === 'REFUNDED' ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-800 border border-blue-300 rounded-full text-xs font-bold">
+                          <RotateCcw size={14} className="text-blue-600" /> ĐÃ HOÀN TIỀN & THU HỒI ĐIỂM
+                        </span>
+                      ) : order.returnStatus === 'REJECTED' ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-800 border border-rose-300 rounded-full text-xs font-bold">
+                          <AlertCircle size={14} className="text-rose-600" /> TỪ CHỐI ĐỔI TRẢ
+                        </span>
+                      ) : isDelivered ? (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-bold">
                           <CheckCircle size={14} className="text-emerald-600" /> GIAO HÀNG THÀNH CÔNG
                         </span>
-                      )}
-                      {isShipping && (
+                      ) : isShipping ? (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full text-xs font-bold animate-pulse">
                           <Truck size={14} className="text-indigo-600" /> ĐANG VẬN CHUYỂN
                         </span>
-                      )}
-                      {isPending && (
+                      ) : isPending ? (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-xs font-bold">
                           <Clock size={14} className="text-amber-600" /> CHỜ XÁC NHẬN & ĐÓNG GÓI
                         </span>
-                      )}
-                      {isReturning && (
+                      ) : isReturning ? (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-bold">
                           <RotateCcw size={14} className="text-rose-600" /> 
                           {order.status === OrderStatus.RETURN_REQUESTED ? 'ĐANG YÊU CẦU ĐỔI TRẢ' : 'ĐÃ HOÀN TRẢ HÀNG'}
                         </span>
-                      )}
-                      {isCancelled && (
+                      ) : isCancelled ? (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 border border-slate-200 rounded-full text-xs font-bold">
                           <AlertCircle size={14} className="text-slate-500" /> ĐÃ HỦY ĐƠN
                         </span>
-                      )}
+                      ) : null}
                     </div>
                   </div>
 
@@ -469,12 +490,30 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                           
                           {/* Item return/exchange banner if active */}
                           {order.returnReason && (
-                            <div className="mt-2 text-[11px] p-2 bg-rose-50 border border-rose-100 rounded-lg text-rose-700 flex items-center gap-1.5">
-                              <Info size={13} className="shrink-0" />
-                              <span>
-                                {order.returnType === 'EXCHANGE_SIZE' ? `Yêu cầu đổi sang size ${order.exchangeSize}: ` : 'Lý do hoàn trả: '}
-                                <strong>{order.returnReason}</strong>
-                              </span>
+                            <div className="mt-2 text-[11px] p-2.5 bg-rose-50/80 border border-rose-200 rounded-xl text-rose-900 space-y-1.5">
+                              <div className="flex items-center gap-1.5 font-bold">
+                                <RotateCcw size={13} className="shrink-0 text-rose-600" />
+                                <span>
+                                  {order.returnType === 'EXCHANGE_SIZE' ? `Yêu cầu đổi sang phiên bản ${order.exchangeSize || 'mới'}: ` : 'Lý do hoàn trả máy: '}
+                                  <strong>{order.returnReason}</strong>
+                                </span>
+                              </div>
+                              {order.returnNote && (
+                                <div className={`p-2 rounded-lg text-[11px] border leading-relaxed ${
+                                  order.returnStatus === 'APPROVED' ? 'bg-emerald-50 text-emerald-950 border-emerald-200' :
+                                  order.returnStatus === 'REFUNDED' ? 'bg-blue-50 text-blue-950 border-blue-200' :
+                                  order.returnStatus === 'REJECTED' ? 'bg-rose-100 text-rose-950 border-rose-200' :
+                                  'bg-amber-50 text-amber-950 border-amber-200'
+                                }`}>
+                                  <strong className="block text-[10px] uppercase tracking-wider mb-0.5">
+                                    {order.returnStatus === 'APPROVED' ? '✓ Phản hồi từ CSKH ZShop (Duyệt Đổi Máy 1-Đổi-1):' :
+                                     order.returnStatus === 'REFUNDED' ? '✓ Kết quả hoàn tiền & điều chỉnh điểm VIP:' :
+                                     order.returnStatus === 'REJECTED' ? '✕ Thông báo từ CSKH ZShop (Từ chối):' :
+                                     '⏳ Trạng thái xét duyệt:'}
+                                  </strong>
+                                  {order.returnNote}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -632,13 +671,23 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                       )}
 
                       {/* RETURN ACTIONS */}
-                      {isReturning && (
+                      {(isReturning || order.returnStatus) && (
                         <button
                           onClick={() => setRefundStatusModalOrder(order)}
-                          className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+                          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer text-white ${
+                            order.returnStatus === 'APPROVED' ? 'bg-emerald-600 hover:bg-emerald-700' :
+                            order.returnStatus === 'REFUNDED' ? 'bg-blue-600 hover:bg-blue-700' :
+                            order.returnStatus === 'REJECTED' ? 'bg-rose-600 hover:bg-rose-700' :
+                            'bg-amber-600 hover:bg-amber-700'
+                          }`}
                         >
                           <RotateCcw size={13} />
-                          <span>Tiến Độ Đổi Trả</span>
+                          <span>
+                            {order.returnStatus === 'APPROVED' ? 'Xem Lệnh Đổi Máy 1-1' :
+                             order.returnStatus === 'REFUNDED' ? 'Biên Lai Hoàn Tiền' :
+                             order.returnStatus === 'REJECTED' ? 'Chi Tiết Từ Chối' :
+                             'Tiến Độ Đổi Trả'}
+                          </span>
                         </button>
                       )}
 
@@ -1159,19 +1208,29 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* MODAL 5: TIẾN ĐỘ HOÀN TIỀN 4 BƯỚC (UC10 STATUS MODAL) */}
+      {/* MODAL 5: TIẾN ĐỘ HOÀN TIỀN & ĐỔI TRẢ 4 BƯỚC ĐỒNG BỘ REAL-TIME (UC10) */}
       {/* ========================================================================= */}
       {refundStatusModalOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 animate-scale-up">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                  refundStatusModalOrder.returnStatus === 'APPROVED' ? 'bg-emerald-100 text-emerald-600' :
+                  refundStatusModalOrder.returnStatus === 'REFUNDED' ? 'bg-blue-100 text-blue-600' :
+                  refundStatusModalOrder.returnStatus === 'REJECTED' ? 'bg-rose-100 text-rose-600' :
+                  'bg-amber-100 text-amber-600'
+                }`}>
                   <RotateCcw size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-slate-900">Tiến Độ Thẩm Định Đổi Trả</h3>
-                  <p className="text-[11px] text-slate-500">Hồ sơ #{refundStatusModalOrder.id}</p>
+                  <h3 className="text-base font-black text-slate-900">
+                    {refundStatusModalOrder.returnStatus === 'APPROVED' ? 'Lệnh Đổi Máy 1-Đổi-1 Đã Duyệt' :
+                     refundStatusModalOrder.returnStatus === 'REFUNDED' ? 'Hồ Sơ Đã Hoàn Tiền Thành Công' :
+                     refundStatusModalOrder.returnStatus === 'REJECTED' ? 'Hồ Sơ Bị Từ Chối Đổi Trả' :
+                     'Tiến Độ Thẩm Định Đổi Trả'}
+                  </h3>
+                  <p className="text-[11px] text-slate-500">Mã đơn: #{refundStatusModalOrder.id}</p>
                 </div>
               </div>
               <button 
@@ -1182,28 +1241,95 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
               </button>
             </div>
 
+            {/* Note alert from CSKH */}
+            {refundStatusModalOrder.returnNote && (
+              <div className={`p-3 rounded-2xl text-xs border ${
+                refundStatusModalOrder.returnStatus === 'APPROVED' ? 'bg-emerald-50 text-emerald-900 border-emerald-200' :
+                refundStatusModalOrder.returnStatus === 'REFUNDED' ? 'bg-blue-50 text-blue-900 border-blue-200' :
+                refundStatusModalOrder.returnStatus === 'REJECTED' ? 'bg-rose-50 text-rose-900 border-rose-200' :
+                'bg-amber-50 text-amber-900 border-amber-200'
+              }`}>
+                <div className="font-bold text-[11px] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <ShieldCheck size={14} /> Phản hồi từ Chuyên viên CSKH ZShop:
+                </div>
+                <p className="leading-relaxed text-[11px]">{refundStatusModalOrder.returnNote}</p>
+              </div>
+            )}
+
             {/* 4 Steps Stepper */}
-            <div className="py-2 pl-4 space-y-5 border-l-2 border-rose-300 ml-3 text-xs">
+            <div className="py-2 pl-4 space-y-5 border-l-2 border-slate-200 ml-3 text-xs">
+              {/* Bước 1 */}
               <div className="relative">
                 <div className="absolute -left-[23px] top-0 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white shadow-xs"></div>
                 <h5 className="font-bold text-slate-900">1. Đã tiếp nhận yêu cầu đổi trả</h5>
                 <p className="text-[11px] text-slate-500">Khách hàng gửi yêu cầu trực tuyến trên web</p>
               </div>
 
+              {/* Bước 2 */}
               <div className="relative">
-                <div className="absolute -left-[23px] top-0 w-4 h-4 rounded-full bg-amber-500 border-2 border-white shadow-xs animate-pulse"></div>
-                <h5 className="font-bold text-amber-900">2. Đang chờ nhân viên CSKH thẩm định</h5>
-                <p className="text-[11px] text-slate-500">Kiểm tra video unboxing và tình trạng tem mác</p>
+                <div className={`absolute -left-[23px] top-0 w-4 h-4 rounded-full border-2 border-white shadow-xs ${
+                  refundStatusModalOrder.returnStatus === 'APPROVED' || refundStatusModalOrder.returnStatus === 'REFUNDED' ? 'bg-emerald-500' :
+                  refundStatusModalOrder.returnStatus === 'REJECTED' ? 'bg-rose-500' :
+                  'bg-amber-500 animate-pulse'
+                }`}></div>
+                <h5 className={`font-bold ${
+                  refundStatusModalOrder.returnStatus === 'APPROVED' || refundStatusModalOrder.returnStatus === 'REFUNDED' ? 'text-emerald-700' :
+                  refundStatusModalOrder.returnStatus === 'REJECTED' ? 'text-rose-700' :
+                  'text-amber-900'
+                }`}>
+                  {refundStatusModalOrder.returnStatus === 'APPROVED' ? '2. CSKH đã phê duyệt đổi máy 1-đổi-1' :
+                   refundStatusModalOrder.returnStatus === 'REFUNDED' ? '2. CSKH đã thẩm định & chấp thuận hoàn tiền' :
+                   refundStatusModalOrder.returnStatus === 'REJECTED' ? '2. CSKH từ chối yêu cầu đổi trả' :
+                   '2. Đang chờ nhân viên CSKH thẩm định'}
+                </h5>
+                <p className="text-[11px] text-slate-500">
+                  {refundStatusModalOrder.returnStatus === 'REJECTED' ? 'Sản phẩm không đáp ứng điều kiện bảo hành VN/A' : 'Kiểm tra tình trạng máy, số IMEI và tem mác Apple'}
+                </p>
               </div>
 
-              <div className="relative opacity-50">
-                <div className="absolute -left-[23px] top-0 w-4 h-4 rounded-full bg-slate-300 border-2 border-white"></div>
-                <h5 className="font-bold text-slate-600">3. Shipper đến thu hồi hàng hoặc đổi size tận nơi</h5>
+              {/* Bước 3 */}
+              <div className={`relative ${
+                refundStatusModalOrder.returnStatus === 'APPROVED' || refundStatusModalOrder.returnStatus === 'REFUNDED' ? '' : 'opacity-40'
+              }`}>
+                <div className={`absolute -left-[23px] top-0 w-4 h-4 rounded-full border-2 border-white shadow-xs ${
+                  refundStatusModalOrder.returnStatus === 'REFUNDED' ? 'bg-emerald-500' :
+                  refundStatusModalOrder.returnStatus === 'APPROVED' ? 'bg-indigo-500 animate-pulse' :
+                  'bg-slate-300'
+                }`}></div>
+                <h5 className={`font-bold ${
+                  refundStatusModalOrder.returnStatus === 'REFUNDED' ? 'text-emerald-700' :
+                  refundStatusModalOrder.returnStatus === 'APPROVED' ? 'text-indigo-700' :
+                  'text-slate-600'
+                }`}>
+                  {refundStatusModalOrder.returnStatus === 'APPROVED' ? '3. Shipper ZShop Express đang mang máy mới đến đổi' :
+                   refundStatusModalOrder.returnStatus === 'REFUNDED' ? '3. Đã nhận máy về kho & hoàn tất kiểm định' :
+                   '3. Shipper đến thu hồi hàng hoặc đổi máy tận nơi'}
+                </h5>
+                <p className="text-[11px] text-slate-500">
+                  {refundStatusModalOrder.returnStatus === 'APPROVED' ? 'Giao máy tận nhà hoàn toàn miễn phí' : 'Kiểm tra IMEI đối soát'}
+                </p>
               </div>
 
-              <div className="relative opacity-50">
-                <div className="absolute -left-[23px] top-0 w-4 h-4 rounded-full bg-slate-300 border-2 border-white"></div>
-                <h5 className="font-bold text-slate-600">4. Hoàn tiền về ví / tài khoản & cập nhật điểm thưởng</h5>
+              {/* Bước 4 */}
+              <div className={`relative ${
+                refundStatusModalOrder.returnStatus === 'REFUNDED' || refundStatusModalOrder.returnStatus === 'APPROVED' ? '' : 'opacity-40'
+              }`}>
+                <div className={`absolute -left-[23px] top-0 w-4 h-4 rounded-full border-2 border-white shadow-xs ${
+                  refundStatusModalOrder.returnStatus === 'REFUNDED' || refundStatusModalOrder.returnStatus === 'APPROVED' ? 'bg-emerald-500' :
+                  'bg-slate-300'
+                }`}></div>
+                <h5 className={`font-bold ${
+                  refundStatusModalOrder.returnStatus === 'REFUNDED' ? 'text-emerald-700' :
+                  refundStatusModalOrder.returnStatus === 'APPROVED' ? 'text-emerald-700' :
+                  'text-slate-600'
+                }`}>
+                  {refundStatusModalOrder.returnStatus === 'REFUNDED' ? '4. Đã hoàn tiền về tài khoản & cân đối điểm VIP' :
+                   refundStatusModalOrder.returnStatus === 'APPROVED' ? '4. Giữ nguyên 100% điểm thưởng VIP cho đơn đổi' :
+                   '4. Quyết toán tiền hoàn & cập nhật điểm thưởng VIP'}
+                </h5>
+                <p className="text-[11px] text-slate-500">
+                  {refundStatusModalOrder.returnStatus === 'REFUNDED' ? 'Tiền đã chuyển về tài khoản ngân hàng của bạn' : 'Bảo toàn quyền lợi hội viên'}
+                </p>
               </div>
             </div>
 

@@ -275,7 +275,7 @@ export const PortalTopBar: React.FC<PortalTopBarProps> = ({
 
             <button
               type="button"
-              onClick={() => onNavigateCSKH?.('POS')}
+              onClick={() => onNavigateCSKH?.(pendingReturnsCount > 0 ? 'RETURNS' : 'POS')}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#262420] hover:bg-[#36322b] active:scale-95 text-stone-200 hover:text-[#e5c9a3] border border-white/10 transition-all font-semibold cursor-pointer"
             >
               <Headset size={13} className="text-rose-400" />

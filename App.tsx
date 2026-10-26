@@ -18,7 +18,7 @@ import { PortalWorkspace } from './components/PortalTopBar';
 import { 
   UserRole, CartItem, ProductDetail, CustomerProfile, 
   StockImportTicket, ReturnRequest, CustomerOrder, 
-  CustomerOrderItem, CustomerReview, OrderStatus 
+  CustomerOrderItem, CustomerReview, OrderStatus, UserNotification 
 } from './types';
 import { ShieldCheck } from 'lucide-react';
 import { MOCK_PRODUCTS_LIST } from './constants';
@@ -89,6 +89,25 @@ const INITIAL_RETURN_REQUESTS: ReturnRequest[] = [
     pointsToDeduct: 110,
     status: 'APPROVED',
     requestedAt: '21/09/2026 16:45'
+  }
+];
+
+const INITIAL_NOTIFICATIONS: UserNotification[] = [
+  {
+    id: 'NOTIF-1',
+    title: 'Sẵn hàng iPhone 18 Pro Max VN/A',
+    message: 'Bản màu Đỏ Rượu Vang Burgundy & Xanh Glacier Titan mới nhất 2026, giao hỏa tốc 2h.',
+    date: '10 phút trước',
+    read: false,
+    type: 'SYSTEM'
+  },
+  {
+    id: 'NOTIF-2',
+    title: 'Ưu đãi Thế Giới iPhone',
+    message: 'Thu cũ đổi mới trợ giá tới 3 triệu & miễn phí ship toàn quốc.',
+    date: '1 giờ trước',
+    read: true,
+    type: 'SYSTEM'
   }
 ];
 
@@ -211,7 +230,9 @@ const INITIAL_CUSTOMER_ORDERS: CustomerOrder[] = [
     },
     returnReason: 'Đổi nâng cấp dung lượng từ 256GB lên 512GB',
     returnType: 'EXCHANGE_SIZE',
-    exchangeSize: '512GB'
+    exchangeSize: '512GB',
+    returnStatus: 'PENDING',
+    returnNote: 'Yêu cầu đang chờ nhân viên CSKH thẩm định & kiểm tra điều kiện bảo hành.'
   }
 ];
 
@@ -269,10 +290,46 @@ const App: React.FC = () => {
   const [importTickets, setImportTickets] = useState<StockImportTicket[]>(INITIAL_IMPORT_TICKETS);
 
   // Danh sách yêu cầu đổi trả & hoàn tiền (UC10)
-  const [returnRequests, setReturnRequests] = useState<ReturnRequest[]>(INITIAL_RETURN_REQUESTS);
+  const [returnRequests, setReturnRequests] = useState<ReturnRequest[]>(() => {
+    try {
+      const saved = localStorage.getItem('zshop_return_requests');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error('Error reading returnRequests from localStorage', e);
+    }
+    return INITIAL_RETURN_REQUESTS;
+  });
 
   // Danh sách đơn hàng mua sắm của khách hàng (Order History Hub)
-  const [customerOrders, setCustomerOrders] = useState<CustomerOrder[]>(INITIAL_CUSTOMER_ORDERS);
+  const [customerOrders, setCustomerOrders] = useState<CustomerOrder[]>(() => {
+    try {
+      const saved = localStorage.getItem('zshop_customer_orders');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error('Error reading customerOrders from localStorage', e);
+    }
+    return INITIAL_CUSTOMER_ORDERS;
+  });
+
+  // Hệ thống thông báo thời gian thực (UC03, UC10)
+  const [notifications, setNotifications] = useState<UserNotification[]>(() => {
+    try {
+      const saved = localStorage.getItem('zshop_notifications');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error('Error reading notifications from localStorage', e);
+    }
+    return INITIAL_NOTIFICATIONS;
+  });
 
   // Khôi phục session người dùng từ localStorage nếu có
   const [currentUser, setCurrentUser] = useState<AuthUserData | null>(() => {
@@ -318,6 +375,41 @@ const App: React.FC = () => {
       console.error('Error saving cart to localStorage', e);
     }
   }, [cartItems]);
+
+  // Đồng bộ hồ sơ đổi trả UC10 vào localStorage
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('zshop_return_requests', JSON.stringify(returnRequests));
+    } catch (e) {
+      console.error('Error saving returnRequests to localStorage', e);
+    }
+  }, [returnRequests]);
+
+  // Đồng bộ đơn hàng mua sắm vào localStorage
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('zshop_customer_orders', JSON.stringify(customerOrders));
+    } catch (e) {
+      console.error('Error saving customerOrders to localStorage', e);
+    }
+  }, [customerOrders]);
+
+  // Đồng bộ thông báo vào localStorage
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('zshop_notifications', JSON.stringify(notifications));
+    } catch (e) {
+      console.error('Error saving notifications to localStorage', e);
+    }
+  }, [notifications]);
+
+  const handleMarkNotificationRead = (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const handleClearNotifications = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
 
   // Modals for Customer (UC01, UC03)
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
@@ -749,7 +841,9 @@ const App: React.FC = () => {
           status: OrderStatus.RETURN_REQUESTED,
           returnReason: reason,
           returnType,
-          exchangeSize
+          exchangeSize,
+          returnStatus: 'PENDING',
+          returnNote: 'Yêu cầu đang chờ nhân viên CSKH ZShop thẩm định & kiểm tra điều kiện bảo hành.'
         };
       }
       return o;
@@ -762,7 +856,7 @@ const App: React.FC = () => {
       customerName: currentUser?.name || customers[0]?.name || 'Nguyễn Quốc Khánh',
       customerPhone: customers[0]?.phone || '0901234567',
       items: [{ name: item.name, quantity: item.quantity, price: item.price }],
-      reason: returnType === 'EXCHANGE_SIZE' ? `Đổi sang size ${exchangeSize}: ${reason}` : reason,
+      reason: returnType === 'EXCHANGE_SIZE' ? `Đổi sang phiên bản ${exchangeSize || 'mới'}: ${reason}` : reason,
       refundAmount: returnType === 'REFUND' ? item.price * item.quantity : 0,
       pointsToDeduct: Math.round((item.price * item.quantity) / 20000), // Điểm tương ứng cần thu hồi nếu hoàn tiền
       status: 'PENDING',
@@ -770,6 +864,18 @@ const App: React.FC = () => {
     };
 
     setReturnRequests(prev => [newReturnReq, ...prev]);
+
+    // 3. Tạo thông báo mới cho khách hàng
+    const newNotif: UserNotification = {
+      id: `NOTIF-${Date.now()}`,
+      title: 'Đã gửi yêu cầu đổi trả',
+      message: `Yêu cầu đổi trả cho đơn #${orderId} đã được gửi thành công đến CSKH ZShop.`,
+      date: 'Vừa xong',
+      read: false,
+      type: 'RETURN',
+      orderId
+    };
+    setNotifications(prev => [newNotif, ...prev]);
   };
 
   // Gửi đánh giá sản phẩm & Tặng điểm VIP
@@ -850,22 +956,112 @@ const App: React.FC = () => {
     const target = returnRequests.find(r => r.id === requestId);
     if (!target) return;
 
+    const timeStr = new Date().toLocaleString('vi-VN');
+
     if (action === 'APPROVE') {
-      setReturnRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: 'APPROVED', processedAt: new Date().toLocaleString() } : r));
-      alert(`Đã phê duyệt nhận lại hàng cho đơn ${target.orderId}. Vui lòng kiểm tra sản phẩm và thực hiện Hoàn tiền!`);
+      // 1. Cập nhật hồ sơ đổi trả trong CSKH
+      setReturnRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: 'APPROVED', processedAt: timeStr } : r));
+
+      // 2. Đồng bộ trực tiếp vào đơn hàng của khách hàng
+      setCustomerOrders(prev => prev.map(o => {
+        if (o.id === target.orderId) {
+          return {
+            ...o,
+            returnStatus: 'APPROVED',
+            returnNote: 'CSKH đã phê duyệt đổi máy 1-đổi-1 chính hãng VN/A. Bộ phận giao vận đang xuất máy mới và điều phối shipper mang đến tận nhà đổi cho bạn!'
+          };
+        }
+        return o;
+      }));
+
+      // 3. Gửi thông báo đến chuông thông báo của khách hàng
+      const notif: UserNotification = {
+        id: `NOTIF-${Date.now()}`,
+        title: '🎉 Duyệt đổi máy 1-đổi-1 thành công!',
+        message: `Đơn hàng #${target.orderId} đã được CSKH phê duyệt đổi máy. Shipper ZShop Express sẽ mang máy mới đến tận nhà đổi cho bạn.`,
+        date: 'Vừa xong',
+        read: false,
+        type: 'RETURN',
+        orderId: target.orderId
+      };
+      setNotifications(prev => [notif, ...prev]);
+
+      alert(`✅ ĐÃ PHÊ DUYỆT ĐỔI MÁY 1-1 CHO ĐƠN ${target.orderId}!\n- Hệ thống đã đồng bộ trạng thái đơn hàng của khách hàng sang "CSKH ĐÃ DUYỆT 1-ĐỔI-1".\n- Thông báo đã được gửi trực tiếp đến chuông thông báo của khách hàng!`);
+
     } else if (action === 'REJECT') {
-      setReturnRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: 'REJECTED', processedAt: new Date().toLocaleString() } : r));
-      alert(`Đã từ chối yêu cầu đổi trả của đơn ${target.orderId}.`);
+      // 1. Cập nhật hồ sơ đổi trả trong CSKH
+      setReturnRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: 'REJECTED', processedAt: timeStr } : r));
+
+      // 2. Đồng bộ trực tiếp vào đơn hàng của khách hàng
+      setCustomerOrders(prev => prev.map(o => {
+        if (o.id === target.orderId) {
+          return {
+            ...o,
+            status: OrderStatus.DELIVERED,
+            returnStatus: 'REJECTED',
+            returnNote: 'Yêu cầu đổi trả bị từ chối do sản phẩm không thỏa mãn điều kiện bảo hành Apple VN/A (thiếu hộp/tem hoặc trầy xước do tác động bên ngoài).'
+          };
+        }
+        return o;
+      }));
+
+      // 3. Gửi thông báo đến chuông thông báo của khách hàng
+      const notif: UserNotification = {
+        id: `NOTIF-${Date.now()}`,
+        title: '⚠️ Yêu cầu đổi trả không được duyệt',
+        message: `Đơn hàng #${target.orderId} bị từ chối do không đạt điều kiện bảo hành Apple VN/A. Vui lòng liên hệ hotline 1900 6868 để được giải đáp.`,
+        date: 'Vừa xong',
+        read: false,
+        type: 'RETURN',
+        orderId: target.orderId
+      };
+      setNotifications(prev => [notif, ...prev]);
+
+      alert(`Đã từ chối yêu cầu đổi trả của đơn ${target.orderId}. Trạng thái đã được đồng bộ đến khách hàng!`);
+
     } else if (action === 'REFUND_AND_CLAWBACK') {
-      // 1. Hoàn tiền
-      setReturnRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: 'REFUNDED', processedAt: new Date().toLocaleString() } : r));
-      
-      // 2. Thu hồi điểm tích lũy của khách hàng
-      if (customers.length > 0) {
-        handleUpdateCustomerPoints(customers[0].id, -target.pointsToDeduct, 0);
+      // 1. Cập nhật hồ sơ đổi trả trong CSKH
+      setReturnRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: 'REFUNDED', processedAt: timeStr } : r));
+
+      // 2. Tìm đơn hàng để kiểm tra điểm đã tiêu lúc thanh toán (nếu có)
+      const matchedOrder = customerOrders.find(o => o.id === target.orderId);
+      const pointsToRestore = matchedOrder?.pointsDeductedAmount ? Math.round(matchedOrder.pointsDeductedAmount / 100) : 0;
+
+      // 3. Đồng bộ trạng thái đơn hàng của khách hàng
+      setCustomerOrders(prev => prev.map(o => {
+        if (o.id === target.orderId) {
+          return {
+            ...o,
+            status: OrderStatus.RETURNED,
+            returnStatus: 'REFUNDED',
+            returnNote: `Đã hoàn tiền ${new Intl.NumberFormat('vi-VN').format(target.refundAmount)}₫ về tài khoản ngân hàng. Đã thu hồi ${target.pointsToDeduct} điểm VIP tích lũy.`
+          };
+        }
+        return o;
+      }));
+
+      // 4. Thu hồi điểm tích lũy & hoàn trả điểm đã tiêu (nếu có)
+      const activeCustId = customers[0]?.id || 'CUST-001';
+      // Trừ điểm tích lũy khống từ đơn hàng
+      handleUpdateCustomerPoints(activeCustId, -target.pointsToDeduct, -target.refundAmount);
+      // Nếu khách từng tiêu điểm cho đơn này, hoàn trả lại điểm đã tiêu vào ví
+      if (pointsToRestore > 0) {
+        handleUpdateCustomerPoints(activeCustId, pointsToRestore, 0);
       }
 
-      alert(`✅ Đã xử lý hoàn tất!\n- Hoàn tiền: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(target.refundAmount)}\n- Đã thu hồi: ${target.pointsToDeduct} điểm thưởng tích lũy của khách hàng.`);
+      // 5. Gửi thông báo đến chuông thông báo của khách hàng
+      const notif: UserNotification = {
+        id: `NOTIF-${Date.now()}`,
+        title: '💰 Đã hoàn tiền & cân đối điểm VIP',
+        message: `Đơn hàng #${target.orderId} đã được hoàn tất: Hoàn tiền ${new Intl.NumberFormat('vi-VN').format(target.refundAmount)}₫ và điều chỉnh điểm VIP thành công.`,
+        date: 'Vừa xong',
+        read: false,
+        type: 'RETURN',
+        orderId: target.orderId
+      };
+      setNotifications(prev => [notif, ...prev]);
+
+      alert(`✅ ĐÃ HOÀN TIỀN & ĐỒNG BỘ THÀNH CÔNG!\n- Đơn hàng: #${target.orderId}\n- Số tiền hoàn lại: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(target.refundAmount)}\n- Điểm thu hồi: -${target.pointsToDeduct} điểm VIP\n${pointsToRestore > 0 ? `- Điểm đã tiêu được hoàn lại ví: +${pointsToRestore} điểm\n` : ''}- Trạng thái đơn hàng và chuông thông báo đã được gửi trực tiếp đến màn hình Khách hàng!`);
     }
   };
 
@@ -962,6 +1158,9 @@ const App: React.FC = () => {
           onAddToCart={handleAddToCart}
           customerProfile={customers.find(c => c.email === currentUser?.email) || customers[0]}
           customerOrders={customerOrders as any}
+          notifications={notifications}
+          onMarkNotificationRead={handleMarkNotificationRead}
+          onClearNotifications={handleClearNotifications}
         />
       )}
 
@@ -999,6 +1198,9 @@ const App: React.FC = () => {
           onNavigateSeller={handleSellerNavigateTab}
           onSwitchRole={handleSwitchRole}
           onSwitchWorkspace={handleSwitchWorkspace}
+          notifications={notifications}
+          onMarkNotificationRead={handleMarkNotificationRead}
+          onClearNotifications={handleClearNotifications}
         />
       )}
 
@@ -1062,6 +1264,9 @@ const App: React.FC = () => {
           onNavigateSeller={handleSellerNavigateTab}
           onSwitchRole={handleSwitchRole}
           onSwitchWorkspace={handleSwitchWorkspace}
+          notifications={notifications}
+          onMarkNotificationRead={handleMarkNotificationRead}
+          onClearNotifications={handleClearNotifications}
         />
       )}
 
