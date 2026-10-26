@@ -114,12 +114,16 @@ export default function CheckoutPage({
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [orderId] = useState<string>(() => `DH-${Math.floor(100000 + Math.random() * 900000)}`);
 
-  // Tính toán tổng tiền
+  // Tính toán tổng tiền & Khấu trừ điểm VIP thông minh (chỉ trừ đúng số điểm cần dùng tương ứng giá đơn hàng)
   const subtotal = DatHangService.tinhTongTienGioHang(cartItems);
   const voucherDiscount = appliedVoucher ? appliedVoucher.discount : 0;
-  const loyaltyDiscount = useLoyaltyPoints ? pointEquivalentVND : 0;
+  const payableBeforePoints = Math.max(0, subtotal + shippingFee - voucherDiscount);
+  const pointsNeeded = Math.ceil(payableBeforePoints / 100);
+  const actualPointsUsed = useLoyaltyPoints ? Math.min(userPoints, pointsNeeded) : 0;
+  const loyaltyDiscount = useLoyaltyPoints ? Math.min(payableBeforePoints, actualPointsUsed * 100) : 0;
   const totalDiscount = voucherDiscount + loyaltyDiscount;
-  const finalTotal = Math.max(0, subtotal + shippingFee - totalDiscount);
+  const finalTotal = Math.max(0, payableBeforePoints - loyaltyDiscount);
+  const remainingPoints = userPoints - actualPointsUsed;
 
   // Sao chép thông tin VietQR
   const handleCopy = (text: string, field: string) => {
@@ -182,9 +186,9 @@ export default function CheckoutPage({
       // Tạo đơn hàng qua Service (kiểm tra tồn kho DB / Backend)
       await DatHangService.taoDonHangNhap(cartItems, orderFormData);
 
-      // Trừ điểm thưởng nếu có dùng
-      if (useLoyaltyPoints && customerProfile && onUpdatePoints) {
-        onUpdatePoints(customerProfile.id, -userPoints);
+      // Trừ điểm thưởng nếu có dùng (chỉ trừ đúng số điểm cần dùng tương ứng giá đơn hàng)
+      if (useLoyaltyPoints && customerProfile && onUpdatePoints && actualPointsUsed > 0) {
+        onUpdatePoints(customerProfile.id, -actualPointsUsed);
       }
 
       // Xử lý thanh toán
@@ -903,12 +907,19 @@ export default function CheckoutPage({
                 </div>
 
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-amber-900">
-                    Khả dụng: <strong>{userPoints} điểm</strong> (= {(pointEquivalentVND).toLocaleString('vi-VN')}đ)
-                  </span>
+                  <div className="text-amber-900 space-y-0.5">
+                    <div>
+                      Khả dụng: <strong>{userPoints.toLocaleString('vi-VN')} điểm</strong> (= {(pointEquivalentVND).toLocaleString('vi-VN')}đ)
+                    </div>
+                    {useLoyaltyPoints && actualPointsUsed > 0 && (
+                      <div className="text-[11px] text-amber-700 font-semibold">
+                        Áp dụng: <strong>{actualPointsUsed.toLocaleString('vi-VN')} điểm</strong> (-{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(loyaltyDiscount)}) • Còn lại: {remainingPoints.toLocaleString('vi-VN')} điểm
+                      </div>
+                    )}
+                  </div>
                   
                   {/* Switch Toggle */}
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
                     <input 
                       type="checkbox" 
                       checked={useLoyaltyPoints} 
@@ -943,10 +954,10 @@ export default function CheckoutPage({
                   </div>
                 )}
 
-                {useLoyaltyPoints && (
+                {useLoyaltyPoints && actualPointsUsed > 0 && (
                   <div className="flex justify-between text-amber-700 font-bold">
-                    <span>Khấu trừ điểm VIP ({userPoints} điểm):</span>
-                    <span>-{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(pointEquivalentVND)}</span>
+                    <span>Khấu trừ điểm VIP ({actualPointsUsed.toLocaleString('vi-VN')} điểm):</span>
+                    <span>-{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(loyaltyDiscount)}</span>
                   </div>
                 )}
 

@@ -137,9 +137,12 @@ export const CSKHPortalPage: React.FC<CSKHPortalPageProps> = ({
   };
 
   const posSubtotal = posCart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  const posPointsDiscount = posUsePoints && matchedPOSCustomer ? Math.min(posSubtotal, matchedPOSCustomer.points * 1000) : 0;
   const tradeInDiscount = posTradeInBonus ? 3000000 : 0;
-  const posFinalTotal = Math.max(0, posSubtotal - posPointsDiscount - tradeInDiscount);
+  const posPayableBeforePoints = Math.max(0, posSubtotal - tradeInDiscount);
+  const posPointsNeeded = Math.ceil(posPayableBeforePoints / 100);
+  const posPointsUsed = posUsePoints && matchedPOSCustomer ? Math.min(matchedPOSCustomer.points, posPointsNeeded) : 0;
+  const posPointsDiscount = posPointsUsed * 100;
+  const posFinalTotal = Math.max(0, posPayableBeforePoints - posPointsDiscount);
   const posChange = Math.max(0, posCashReceived - posFinalTotal);
 
   const handlePOSCompleteOrder = () => {
@@ -152,9 +155,8 @@ export const CSKHPortalPage: React.FC<CSKHPortalPageProps> = ({
       onDeductStock?.(item.product.id, item.quantity);
     });
 
-    if (posUsePoints && matchedPOSCustomer) {
-      const usedPoints = Math.round(posPointsDiscount / 1000);
-      onUpdateCustomerPoints(matchedPOSCustomer.id, -usedPoints, posFinalTotal);
+    if (posUsePoints && matchedPOSCustomer && posPointsUsed > 0) {
+      onUpdateCustomerPoints(matchedPOSCustomer.id, -posPointsUsed, posFinalTotal);
     } else if (matchedPOSCustomer) {
       const earnedPoints = Math.round(posFinalTotal / 100000);
       onUpdateCustomerPoints(matchedPOSCustomer.id, earnedPoints, posFinalTotal);
@@ -577,7 +579,10 @@ export const CSKHPortalPage: React.FC<CSKHPortalPageProps> = ({
                         onChange={(e) => setPosUsePoints(e.target.checked)}
                         className="rounded text-amber-600"
                       />
-                      <span>Dùng {matchedPOSCustomer.points} điểm (-{new Intl.NumberFormat('vi-VN').format(matchedPOSCustomer.points * 1000)}₫)</span>
+                      <span>
+                        Dùng {posPointsUsed > 0 ? posPointsUsed.toLocaleString('vi-VN') : matchedPOSCustomer.points.toLocaleString('vi-VN')} điểm 
+                        {posPointsUsed > 0 ? ` (-${new Intl.NumberFormat('vi-VN').format(posPointsDiscount)}₫)` : ` (tối đa -${new Intl.NumberFormat('vi-VN').format(matchedPOSCustomer.points * 100)}₫)`}
+                      </span>
                     </label>
                   )}
                 </div>
