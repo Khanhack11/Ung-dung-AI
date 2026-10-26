@@ -1065,6 +1065,48 @@ const App: React.FC = () => {
     }
   };
 
+  // Cập nhật trạng thái đơn hàng (Duyệt xuất kho & Xác nhận giao hàng - Quản trị viên/Kho)
+  const handleUpdateOrderStatus = (orderId: string, newStatus: OrderStatus) => {
+    // 1. Cập nhật trong customerOrders
+    setCustomerOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+
+    // 2. Tự động gửi thông báo đến chuông của Khách hàng
+    if (newStatus === OrderStatus.SHIPPING) {
+      const notif: UserNotification = {
+        id: `NOTIF-${Date.now()}`,
+        title: '🚚 Đơn hàng đang giao hỏa tốc 2h',
+        message: `Đơn hàng #${orderId} đã được xuất kho và chuyên viên Apple Express đang trên đường giao máy đến bạn.`,
+        date: 'Vừa xong',
+        read: false,
+        type: 'ORDER',
+        orderId
+      };
+      setNotifications(prev => [notif, ...prev]);
+      alert(`✅ ĐÃ DUYỆT & XUẤT KHO THÀNH CÔNG!\n- Đơn hàng #${orderId} đã chuyển sang "ĐANG VẬN CHUYỂN (SHIPPING)".\n- Khách hàng đã nhận được thông báo hành trình!`);
+    } else if (newStatus === OrderStatus.DELIVERED) {
+      const notif: UserNotification = {
+        id: `NOTIF-${Date.now()}`,
+        title: '🎉 Giao hàng thành công!',
+        message: `Đơn hàng #${orderId} đã giao thành công. Chúc bạn có trải nghiệm tuyệt vời cùng siêu phẩm iPhone!`,
+        date: 'Vừa xong',
+        read: false,
+        type: 'ORDER',
+        orderId
+      };
+      setNotifications(prev => [notif, ...prev]);
+
+      // Tặng điểm VIP tích lũy cho khách hàng (UC03)
+      const targetOrder = customerOrders.find(o => o.id === orderId);
+      if (targetOrder) {
+        const earnedVip = Math.round(targetOrder.totalAmount / 100000);
+        const activeCustId = customers[0]?.id || 'CUST-001';
+        handleUpdateCustomerPoints(activeCustId, earnedVip, targetOrder.totalAmount);
+      }
+
+      alert(`✅ ĐÃ XÁC NHẬN GIAO HÀNG THÀNH CÔNG!\n- Đơn hàng #${orderId} đã chuyển sang "GIAO HÀNG THÀNH CÔNG (DELIVERED)".\n- Hệ thống đã tích điểm VIP và kích hoạt bảo hành điện tử e-Warranty!\n- Khách hàng có thể Đánh Giá hoặc yêu cầu Đổi trả bảo hành 1-1 ngay trên web!`);
+    }
+  };
+
   const handleLoginSuccess = (role: 'CUSTOMER' | 'ADMIN' | 'SALES' | 'WAREHOUSE') => {
     const session = AuthService.getSession();
     setCurrentUser(session?.user || null);
@@ -1327,6 +1369,8 @@ const App: React.FC = () => {
             currentUser={currentUser}
             pendingReturnsCount={returnRequests.filter(r => r.status === 'PENDING').length}
             initialTab={adminInitialTab}
+            customerOrders={customerOrders}
+            onUpdateOrderStatus={handleUpdateOrderStatus}
           />
         ) : (
           <AccessDenied 

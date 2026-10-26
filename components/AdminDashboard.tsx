@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { 
   Users, Settings, LogOut, Search, 
-  TrendingUp, Plus, Edit, CheckCircle, XCircle, Truck, Package, 
+  TrendingUp, Plus, Edit, CheckCircle, CheckCircle2, XCircle, Truck, Package, 
   DollarSign, BarChart3, 
   Store, FileSpreadsheet, Printer, RotateCcw, Sparkles, 
   Boxes, Smartphone, Flame, CreditCard
 } from 'lucide-react';
 import { MOCK_PRODUCTS_LIST, MOCK_ORDER } from '../constants';
-import { ProductDetail, OrderStatus, UserRole } from '../types';
+import { ProductDetail, OrderStatus, UserRole, CustomerOrder } from '../types';
 import PortalTopBar, { PortalWorkspace } from './PortalTopBar';
 
 const GENERATE_MOCK_ORDERS = () => [
@@ -65,6 +65,8 @@ interface AdminDashboardProps {
   currentUser?: any;
   pendingReturnsCount?: number;
   initialTab?: 'DASHBOARD' | 'ORDERS' | 'PRODUCTS' | 'SELLERS' | 'CONFIG' | 'AI_BI';
+  customerOrders?: CustomerOrder[];
+  onUpdateOrderStatus?: (orderId: string, newStatus: OrderStatus) => void;
 }
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ 
@@ -77,7 +79,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onSwitchRole,
   currentUser,
   pendingReturnsCount = 0,
-  initialTab = 'DASHBOARD'
+  initialTab = 'DASHBOARD',
+  customerOrders = [],
+  onUpdateOrderStatus
 }) => {
   const [activeTab, setActiveTab] = useState<'DASHBOARD' | 'ORDERS' | 'PRODUCTS' | 'SELLERS' | 'CONFIG' | 'AI_BI'>(initialTab);
 
@@ -246,7 +250,26 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     document.body.removeChild(link);
   };
 
+  // Đồng bộ đơn hàng từ CustomerOrders của ZShop
+  const unifiedOrders = React.useMemo(() => {
+    if (customerOrders && customerOrders.length > 0) {
+      return customerOrders.map(co => ({
+        id: co.id,
+        date: co.createdAt,
+        customer: co.shippingAddress?.fullName || 'Nguyễn Quốc Khánh',
+        item: co.items?.map(it => `${it.name} (x${it.quantity})`).join(', ') || 'iPhone VN/A',
+        total: co.totalAmount,
+        status: co.status,
+        rawOrder: co
+      }));
+    }
+    return orders;
+  }, [customerOrders, orders]);
+
   const handleUpdateOrderStatus = (id: string, newStatus: OrderStatus) => {
+    if (onUpdateOrderStatus) {
+      onUpdateOrderStatus(id, newStatus);
+    }
     setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
   };
 
@@ -1215,7 +1238,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-stone-200/70">
-                      {orders
+                      {unifiedOrders
                         .filter(o => 
                           (orderFilter === 'ALL' || o.status === orderFilter) && 
                           (o.id.toLowerCase().includes(orderSearch.toLowerCase()) || o.customer.toLowerCase().includes(orderSearch.toLowerCase()))
@@ -1230,20 +1253,51 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total)}
                             </td>
                             <td className="px-5 py-3.5">
-                              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900">
-                                {order.status}
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                                order.status === OrderStatus.DELIVERED ? 'bg-emerald-100 text-emerald-900' :
+                                order.status === OrderStatus.SHIPPING ? 'bg-indigo-100 text-indigo-900 animate-pulse' :
+                                order.status === OrderStatus.RETURN_REQUESTED ? 'bg-rose-100 text-rose-900' :
+                                'bg-amber-100 text-amber-900'
+                              }`}>
+                                {order.status === OrderStatus.PENDING ? 'Chờ duyệt' :
+                                 order.status === OrderStatus.PAID ? 'Đã TT VietQR' :
+                                 order.status === OrderStatus.PROCESSING ? 'Đang chuẩn bị hàng' :
+                                 order.status === OrderStatus.SHIPPING ? 'Đang giao 2h' :
+                                 order.status === OrderStatus.DELIVERED ? 'Đã giao thành công' :
+                                 order.status === OrderStatus.RETURN_REQUESTED ? 'Đang đổi trả' :
+                                 order.status}
                               </span>
                             </td>
                             <td className="px-5 py-3.5 text-right">
-                              {(order.status === OrderStatus.PENDING || order.status === OrderStatus.PAID) ? (
+                              {(order.status === OrderStatus.PENDING || order.status === OrderStatus.PAID || order.status === OrderStatus.PROCESSING) ? (
                                 <button 
                                   onClick={() => handleUpdateOrderStatus(order.id, OrderStatus.SHIPPING)}
-                                  className="px-3 py-1.5 text-xs bg-[#1e1d1a] text-[#e5c9a3] rounded-lg font-bold cursor-pointer inline-flex items-center gap-1"
+                                  className="px-3 py-1.5 text-xs bg-[#1e1d1a] hover:bg-black text-[#e5c9a3] rounded-lg font-bold cursor-pointer inline-flex items-center gap-1 shadow-sm transition-all"
+                                  title="Duyệt đơn và xuất kho cho đơn vị giao vận ZShop Express 2h"
                                 >
-                                  <Truck size={13} /> Xuất Kho Giao 2h
+                                  <Truck size={13} /> Duyệt & Xuất Kho 2h
+                                </button>
+                              ) : order.status === OrderStatus.SHIPPING ? (
+                                <button 
+                                  onClick={() => handleUpdateOrderStatus(order.id, OrderStatus.DELIVERED)}
+                                  className="px-3 py-1.5 text-xs bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-bold cursor-pointer inline-flex items-center gap-1 shadow-sm transition-all"
+                                  title="Xác nhận khách hàng đã nhận máy và ký biên bản kiểm định IMEI"
+                                >
+                                  <CheckCircle2 size={13} /> Xác Nhận Đã Giao
+                                </button>
+                              ) : order.status === OrderStatus.DELIVERED ? (
+                                <span className="text-[11px] text-emerald-700 font-bold inline-flex items-center gap-1">
+                                  <CheckCircle2 size={13} /> Đã giao thành công
+                                </span>
+                              ) : order.status === OrderStatus.RETURN_REQUESTED ? (
+                                <button
+                                  onClick={() => onNavigateToReturns?.()}
+                                  className="px-2.5 py-1 text-xs bg-rose-50 text-rose-700 border border-rose-300 rounded-lg font-bold cursor-pointer hover:bg-rose-100"
+                                >
+                                  Hồ sơ đổi trả 1-1
                                 </button>
                               ) : (
-                                <span className="text-[11px] text-emerald-700 font-bold">Đã điều phối</span>
+                                <span className="text-[11px] text-stone-500 font-bold">{order.status}</span>
                               )}
                             </td>
                           </tr>
