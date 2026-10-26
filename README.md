@@ -1,65 +1,63 @@
-<div align="center">
-
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-
-# ⚡ ZShop — 3D Spatial E-Commerce & SZ Payment Gateway
-
-### Nền tảng thương mại điện tử không gian 3D thế hệ mới kết hợp cổng thanh toán lượng tử siêu tốc
-**Lấy cảm hứng & phát triển dựa trên bộ đặc tả thiết kế 3D từ [motionsites-prompt-collection](https://github.com/nomaan5541/motionsites-prompt-collection)**
+# 📱 Thế Giới iPhone — ZShop
+### Hệ Thống Quản Lý Bán Hàng & Thương Mại Điện Tử Tích Hợp AI Multi-Agent RAG
 
 [![React 19](https://img.shields.io/badge/React-19.2-61dafb?style=for-the-badge&logo=react)](https://react.dev/)
-[![Three.js](https://img.shields.io/badge/Three.js-0.160-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.2-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-
-</div>
+[![Node.js](https://img.shields.io/badge/Node.js-Express_v5-green?style=for-the-badge&logo=node.js)](https://nodejs.org/)
+[![Python](https://img.shields.io/badge/Python-Flask_Microservice-yellow?style=for-the-badge&logo=python)](https://python.org/)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector_DB-red?style=for-the-badge)](https://www.trychroma.com/)
 
 ---
 
 ## 🌟 Giới Thiệu Dự Án (Project Overview)
 
-**ZShop & SZ-Payment Gateway** là giải pháp thương mại điện tử hiện đại kết hợp giữa giao diện bán hàng trực quan (Shopee Storefront) và **không gian trải nghiệm 3D siêu thực (3D Spatial Experience)**. 
+**Thế Giới iPhone — ZShop** là giải pháp phần mềm quản trị bán hàng và thương mại điện tử thông minh, vận hành theo mô hình **Cửa hàng Đơn nhất (Single-Store Model)** chuyên biệt cho các dòng **Điện thoại iPhone chính hãng Apple VN/A & Máy Sưu Tầm** (từ iPhone 4s, 8 Plus, XS Max, 11, 12, 13, 14, 15, 16, 17 đến iPhone 18 Pro Max Flagship) cùng hệ sinh thái phụ kiện Apple cao cấp.
 
-Dự án ứng dụng thư viện đồ họa **Three.js WebGL**, hệ thống bố cục **Glassmorphic Bento Grid**, âm thanh không gian đa chiều, và bộ giả lập cổng thanh toán tức thì chuẩn lượng tử (0.02s).
+Hệ thống tích hợp công nghệ **Multi-Agent RAG AI** (8 tác tử thông minh), kiến trúc phân quyền chuẩn **UML 2.5 cho 4 tác nhân**, cổng thanh toán trực tuyến **SZ-Payment (VietQR Napas 24/7)** và cơ sở dữ liệu quan hệ **15 bảng chuẩn 3NF**.
 
 ---
 
-## ✨ Tính Năng Nổi Bật (Key Features)
+## 👥 Mô Hình 4 Tác Nhân Chuẩn UML 2.5 (RBAC Matrix)
 
-### 1. 🌌 Landing Page 3D Hyper-Fidelity (MotionSites Spatial Engine)
-Trải nghiệm không gian 3D tương tác cao được xây dựng theo chuẩn mực từ kho lưu trữ `motionsites-prompt-collection`:
-* **WebGL 3D Canvas thời gian thực**: Hệ sinh thái 1.600+ hạt tinh vân ánh sáng (particle nebula) phản ứng theo độ sâu z-axis.
-* **4 Mô hình hình học 3D tùy biến**:
-  1. *Lõi Lượng Tử (Quantum Core)*: Lõi bát diện phát quang cùng 2 vành đai con quay hồi chuyển đồng tâm.
-  2. *Vòng Xoắn Torus (Cyber Torus Knot)*: Đường ống kim loại tương lai phản chiếu ánh sáng động.
-  3. *Hologram Trắc Địa (Sphere Grid)*: Lưới quả cầu không gian với hạt nhân phát quang.
-  4. *Ma Trận Lập Phương (Quantum Lattice)*: Lưới tinh thể đa chiều.
-* **Tương tác chuột (Mouse Parallax & Easing)**: Góc nhìn camera lướt theo tọa độ con trỏ chuột với hệ số giảm xóc mượt mà.
-* **HUD Toolbar điều khiển 3D trực tiếp**: Bật/tắt chế độ khung dây neon (*Wireframe*) / khối đặc phản chiếu (*Shaded*), chuyển đổi mô hình và điều chỉnh tốc độ quay (*0.5x, 1.0x, 2.0x*).
-* **Âm thanh không gian (Procedural Web Audio Synthesizer)**: Bộ tổng hợp sóng âm drone êm dịu (hợp âm C-G-C-E) tạo trực tiếp từ Web Audio API, không phụ thuộc file âm thanh ngoài.
+Hệ thống phân định rành mạch quyền hạn và không gian làm việc giữa 4 vai trò:
 
-### 2. 🧩 Lưới Bento 3D Tương Tác (Bento Grid 3D)
-* **Trình xoay sản phẩm 3D 360° độc lập**: Mini-canvas cho phép người dùng kéo thả chuột để xoay xem sản phẩm đa chiều, đổi màu và đổi chế độ hiển thị trước khi mua.
-* **Biểu đồ xung nhịp khớp lệnh**: Trực quan hóa độ trễ xử lý thanh toán đa kênh (VietQR: 12ms, MoMo: 18ms, Visa: 24ms).
-* **Két bảo mật ZK & Sinh trắc học**: Nút tương tác chạm quét vân tay mô phỏng giải mã token thanh toán bảo mật.
-* **Trợ lý AI Mua sắm ZShop Copilot**: Giả lập đối thoại AI tư vấn kích cỡ, phối đồ thời trang thông minh.
+1. **Admin (`ADMIN`) — Chủ cửa hàng**:
+   - Giám sát dashboard kinh doanh tổng thể: Doanh thu tuần/tháng, tỷ suất lợi nhuận, biểu đồ đơn hàng.
+   - Quản trị nhân sự: Phê duyệt và cấp quyền cho Nhân viên Bán hàng và Nhân viên Kho.
+   - Báo cáo tài chính AI BI (`UC09`): Dự báo doanh số, xuất báo cáo doanh thu Excel/PDF.
 
-### 3. 💳 Bộ Giả Lập Thanh Toán 3D (Quantum Payment Simulator)
-* Hỗ trợ đa dạng kênh thanh toán: **VietQR Napas 247**, **Ví MoMo**, **ZaloPay**, **Visa / Mastercard**, và **Crypto USDT**.
-* Chọn nhanh số tiền giao dịch hoặc nhập số tiền tùy ý.
-* Kích hoạt hiệu ứng chùm tia năng lượng và quy trình 3 bước: *Mã hóa ZK Token → Định tuyến liên ngân hàng → Ký duyệt giao dịch*.
-* Xuất **Hóa đơn số 3D** kèm mã băm giao dịch (TxHash) có thể sao chép 1-click.
+2. **Nhân viên Bán hàng (`SALES`) — POS & CSKH**:
+   - Phân hệ bán lẻ tại quầy POS (`UC04`): Quét mã sản phẩm, tra cứu SĐT khách hàng, tự động tính chiết khấu VIP và in hóa đơn tức thì.
+   - Quản lý CRM & Khách hàng thân thiết (`UC03`): Tra cứu lịch sử mua sắm, hạng thành viên (Đồng, Bạc, Vàng, Kim Cương).
+   - Tiếp nhận & duyệt đổi trả 1-1 (`UC10`): Tự động thu hồi điểm tích lũy tương ứng theo quy định.
 
-### 4. 🛍️ Cửa Hàng Trực Tuyến ZShop (Storefront)
-* Giao diện e-commerce hoàn chỉnh: Banner khuyến mãi, danh mục ngành hàng, Flash Sale đếm ngược, lưới sản phẩm gợi ý.
-* Nút chuyển đổi nổi bật **"✨ Không Gian 3D"** trên Header cho phép người dùng quay lại không gian 3D bất kỳ lúc nào.
-* Trang chi tiết sản phẩm với chọn màu sắc, kích thước, số lượng.
-* **MiniCart thông minh**: Giỏ hàng trượt mượt mà, đồng bộ số lượng sản phẩm giữa cả hai chế độ xem.
+3. **Nhân viên Kho (`WAREHOUSE`) — Quản lý Sản phẩm & Tồn kho**:
+   - Quản lý danh mục máy & phụ kiện (`UC02`): Cập nhật giá bán, số lượng tồn kho thực tế.
+   - Lập phiếu nhập kho (`UC05`): Nhập lô máy VN/A từ nhà cung cấp ủy quyền.
+   - AI Dự báo & Khuyến nghị Nhập kho (`UC08`): Cảnh báo ngưỡng tồn kho an toàn (`stock <= 25 máy`) và tự động đề xuất số lượng nhập tối ưu.
 
-### 5. 🏪 Kênh Người Bán & Quản Trị Hệ Thống
-* **Kênh Người Bán (Seller Channel)**: Đăng ký mở shop, quản lý kho hàng, tạo chiến dịch khuyến mãi.
-* **Bảng Quản Trị Admin**: Phê duyệt người bán, quản lý danh mục sản phẩm, theo dõi thống kê doanh thu và đơn hàng.
+4. **Khách hàng (`CUSTOMER`) — Mua sắm Trực tuyến**:
+   - Khám phá showroom máy qua giao diện Bento Grid trực quan (`UC02`).
+   - Mua sắm giỏ hàng thông minh, chọn mua lẻ từng máy hoặc theo nhóm dòng máy.
+   - Thanh toán đa kênh **SZ-Payment** (`VietQR Napas 24/7`, `COD`, `Thẻ quốc tế`).
+   - Đối thoại với **Trợ lý AI GenZ Copilot** (`UC07`): Tra cứu cấu hình chip A-Series, camera, pin, so sánh máy, kiểm tra đơn hàng và quyền lợi VIP.
+
+---
+
+## 🧠 Kiến Trúc Multi-Agent RAG AI (8 Agents Pipeline)
+
+Hệ thống AI Microservice vận hành tại `agent_service/` kết nối Vector DB **ChromaDB**:
+
+1. **Orchestrator Agent**: Điều phối luồng xử lý toàn cục và phân định ngữ cảnh câu hỏi.
+2. **Analyst Agent**: Phân tích ý định tự nhiên, trích xuất thực thể (model máy, dung lượng, màu sắc, khoảng giá) và giải mã tiếng lóng GenZ Việt Nam.
+3. **Database Agent**: Truy vấn an toàn CSDL MySQL/SQL Server, kiểm tra giá và tồn kho thời gian thực.
+4. **RAG Agent**: Tìm kiếm tri thức ngữ nghĩa từ ChromaDB (thông số kỹ thuật, bảo hành chính hãng, chính sách đổi trả).
+5. **Recommendation Agent**: Gợi ý các model máy phù hợp nhất theo ngân sách và nhu cầu công thái học.
+6. **Reasoning Agent**: Lập luận so sánh chuyên sâu (chip, màn hình Promotion 120Hz, camera tele zoom, thời lượng pin).
+7. **Critic Agent**: Kiểm định phản hồi, ngăn chặn ảo giác giá (0% Hallucination) và bảo đảm dữ liệu luôn khớp kho thực tế.
+8. **Response Agent**: Định dạng câu trả lời thân thiện, sinh thẻ sản phẩm tương tác và đề xuất nút hành động 1-click.
 
 ---
 
@@ -67,44 +65,42 @@ Trải nghiệm không gian 3D tương tác cao được xây dựng theo chuẩ
 
 | Hạng mục | Công nghệ |
 | :--- | :--- |
-| **Giao diện (Frontend)** | React 19, TypeScript, Vite 6 |
-| **Đồ họa 3D (3D WebGL)** | Three.js (`three`), `@types/three` |
-| **Thiết kế & Giao diện** | Tailwind CSS 3.4, PostCSS, Lucide Icons |
-| **AI Shopping Assistant** | Google Gemini API (`@google/genai`), Deep Chat React |
-| **Âm thanh (Audio)** | HTML5 Web Audio API (Procedural Synthesizer) |
-| **Thiết kế cảm hứng** | [MotionSites Prompt Collection](https://github.com/nomaan5541/motionsites-prompt-collection) |
+| **Giao diện (Frontend)** | React 19, TypeScript 5.8, Vite 6.2, Tailwind CSS 3.4, Lucide React |
+| **Dịch vụ Nghiệp vụ (Backend)** | Node.js, Express v5, MSSQL / MySQL Client, JWT, CORS |
+| **Trí tuệ Nhân tạo (AI Microservice)** | Python 3.10+, Flask, ChromaDB, Sentence-Transformers, Google Gemini API |
+| **Cơ sở Dữ liệu (Database)** | SQL Server / MySQL (15 bảng chuẩn 3NF), Vector DB ChromaDB |
+| **Cổng thanh toán (Payment)** | SZ-Payment Gateway (VietQR Napas 24/7, MoMo, COD) |
 
 ---
 
 ## 📁 Cấu Trúc Thư Mục (Project Structure)
 
 ```text
-szshop-payment-gateway/
-├── components/
-│   ├── Landing3D/                 # Module Landing Page 3D
-│   │   ├── ThreeScene.tsx         # Canvas Three.js WebGL & hệ thống hạt, ánh sáng, mô hình
-│   │   ├── Navbar3D.tsx           # Thanh điều hướng kính mờ & bộ bật âm thanh không gian
-│   │   ├── Hero3D.tsx             # Hero section, tiêu đề gradient, HUD điều khiển 3D
-│   │   ├── BentoGrid3D.tsx        # Lưới bento, trình xem sản phẩm 3D xoay 360°, két sinh trắc
-│   │   ├── PaymentSimulator3D.tsx # Giả lập thanh toán lượng tử & hóa đơn số 3D
-│   │   ├── Footer3D.tsx           # Mega footer, trạng thái hệ thống, liên kết
-│   │   └── LandingPage3D.tsx      # Tệp tổng hợp chính cho chế độ 3D
-│   ├── ZShop/                     # Giao diện cửa hàng e-commerce
-│   │   ├── Header.tsx             # Header Shopee có nút chuyển "✨ Không Gian 3D"
-│   │   ├── ShopeeHomePage.tsx     # Trang chủ cửa hàng
-│   │   ├── ProductGrid.tsx        # Danh sách sản phẩm
-│   │   ├── FlashSale.tsx          # Mục flash sale
-│   │   └── Categories.tsx         # Danh mục ngành hàng
-│   ├── MiniCart.tsx               # Giỏ hàng pop-up toàn cục
-│   ├── ProductDetailPage.tsx      # Chi tiết sản phẩm
-│   ├── CheckoutPage.tsx           # Thanh toán đơn hàng
-│   ├── AdminDashboard.tsx         # Bảng điều khiển quản trị viên
-│   └── SellerChannelPage.tsx      # Kênh dành cho người bán
-├── App.tsx                        # Bộ điều hướng ViewState trung tâm
-├── services.ts                    # Dịch vụ dữ liệu sản phẩm & giỏ hàng
-├── types.ts                       # Định nghĩa TypeScript types
-├── vite.config.ts                 # Cấu hình Vite & alias Three.js
-└── package.json                   # Cấu hình dự án & dependencies
+_Web_ZShop-main/
+├── agent_service/               # AI Microservice (Python Flask + ChromaDB)
+│   ├── agents/                  # 8 Tác tử AI (Orchestrator, Analyst, RAG, Critic...)
+│   ├── data/                    # all_50_products.json & Chroma Vector Store
+│   └── run_server.py            # Entry point chạy AI Microservice (Port 5001)
+├── components/                  # Giao diện người dùng React 19
+│   ├── ZShop/                   # Storefront (Header, ShopeeHomePage, ProductGrid...)
+│   ├── AdminDashboard.tsx       # Phân hệ Quản trị Chủ cửa hàng (ADMIN)
+│   ├── CSKHPortalPage.tsx       # Phân hệ POS & CSKH Nhân viên Bán hàng (SALES)
+│   ├── WarehousePage.tsx        # Phân hệ Kho & Nhập kho VN/A (WAREHOUSE)
+│   ├── ChatBot.tsx              # Trợ lý AI Bán hàng GenZ Copilot
+│   ├── CheckoutPage.tsx         # Thanh toán 1 trang SZ-Payment
+│   ├── MiniCart.tsx             # Giỏ hàng thông minh
+│   ├── MyOrdersPage.tsx         # Tra cứu đơn hàng & Đổi trả 1-1
+│   └── ProductDetailPage.tsx    # Chi tiết sản phẩm & so sánh cấu hình
+├── szshop-backend/              # Backend API (Node.js Express v5)
+│   ├── controllers/             # Auth, Product, Cart, Order, Payment, Chat Controller
+│   ├── repositories/            # Data Access Layer (SQL Server / MySQL)
+│   ├── services/                # Nghiệp vụ & AiService (Fallback RAG)
+│   ├── database.sql             # Kịch bản khởi tạo 15 bảng CSDL chuẩn 3NF
+│   └── server.js                # Entry point Express API (Port 5000)
+├── App.tsx                      # Bộ điều hướng ViewState & Phân quyền 4 Tác nhân
+├── database.ts                  # Mock CSDL & Data Adapter cho Storefront
+├── constants.ts                 # Danh mục 50 mã iPhone & Phụ kiện chuẩn Apple
+└── tailwind.config.js           # Palette Titanium Vàng Sa Mạc (#9a7b4f) & Font Inter
 ```
 
 ---
@@ -113,41 +109,35 @@ szshop-payment-gateway/
 
 ### Yêu Cầu Tiên Quyết
 * **Node.js**: Phiên bản 18.x trở lên.
-* Trình duyệt hỗ trợ **WebGL 2.0** (Chrome, Edge, Firefox, Safari, Brave,...).
+* **Python**: Phiên bản 3.10 trở lên.
+* **SQL Server** hoặc **MySQL**: Đã cài đặt hoặc chạy qua Docker.
 
-### 1. Cài đặt mã nguồn
+### 1. Cài đặt dependencies Frontend & Backend
 ```bash
-git clone https://github.com/tamtran2k6zz/_Web_ZShop.git
-cd _Web_ZShop
-git checkout Landing-page-3D
-```
-
-### 2. Cài đặt dependencies
-```bash
+# Cài đặt thư viện Frontend
 npm install
+
+# Cài đặt thư viện Backend
+cd szshop-backend
+npm install
+cd ..
 ```
 
-### 3. Cấu hình biến môi trường (Tùy chọn)
-Tạo tệp `.env.local` ở thư mục gốc nếu muốn sử dụng trợ lý AI Chatbot:
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-
-### 4. Khởi chạy môi trường phát triển (Development)
+### 2. Cài đặt môi trường AI Microservice
 ```bash
-npm run dev
+cd agent_service
+pip install -r requirements.txt # hoặc flask pymysql chromadb sentence-transformers
+cd ..
 ```
-Mở trình duyệt tại: 👉 **`http://localhost:3000`** hoặc cổng hiển thị trên terminal.
 
-### 5. Đóng gói cho môi trường Production (Build)
+### 3. Khởi chạy toàn bộ hệ sinh thái
+Hệ thống cung cấp sẵn script chạy đồng thời qua `concurrently`:
 ```bash
-npm run build
-npm run preview
+# Chạy đồng thời Backend (5000) và Frontend Vite (3000):
+npm run dev:all
+
+# Hoặc chạy đầy đủ cả 3 tầng (Backend 5000 + AI Microservice 5001 + Frontend 3000):
+npm run dev:full
 ```
 
----
-
-## 📜 Bản Quyền & Ghi Công (License & Acknowledgements)
-
-* Bản quyền thuộc về **ZShop Vietnam Team**.
-* Các mẫu prompt thiết kế 3D, shader WebGL và phong cách glassmorphism được kế thừa và phát triển từ dự án mã nguồn mở **[MotionSites Prompts Collection](https://github.com/nomaan5541/motionsites-prompt-collection)** (tác giả: **nomaan5541**).
+Truy cập hệ thống tại: 👉 **`http://localhost:3000`**

@@ -10,7 +10,7 @@ const ZSHOP_KNOWLEDGE_BASE = {
     shippingPolicy: 'Chính sách vận chuyển: Miễn phí vận chuyển (FREESHIP) toàn quốc cho mọi đơn hàng từ 300.000đ trở lên. Với đơn dưới 300.000đ, phí giao tiêu chuẩn là 30.000đ (2-3 ngày) và giao hỏa tốc ZShop Fast là 50.000đ (nhận trong 24 giờ).',
     paymentMethods: 'Phương thức thanh toán: ZShop hỗ trợ quét mã VietQR Napas 24/7 tự động xác nhận, thanh toán tiền mặt khi nhận hàng (COD - được đồng kiểm bóc kiện xem hàng), Ví điện tử MoMo/ZaloPay và thẻ tín dụng/ghi nợ quốc tế (Visa, Mastercard) bảo mật PCI-DSS.',
     storeAddress: 'Hệ thống showroom ZShop: Flagship Store tại 12 Lê Lợi, P. Bến Nghé, Quận 1, TP. Hồ Chí Minh. Mở cửa từ 08:30 đến 22:00 tất cả các ngày trong tuần (kể cả Thứ Bảy, Chủ Nhật và ngày lễ). Hotline/Zalo CSKH: 0901 234 567.',
-    warrantyCommitment: 'Cam kết chất lượng: 100% sản phẩm chính hãng, đền bù 200% giá trị nếu phát hiện hàng giả hàng nhái. Bảo hành 12 tháng đối với phụ kiện công nghệ và đồng hồ, hỗ trợ bảo hành đường may trọn đời cho các dòng thời trang cao cấp.'
+    warrantyCommitment: 'Cam kết chất lượng: 100% iPhone VN/A & Phụ kiện chính hãng Apple, đền bù 200% giá trị nếu phát hiện hàng giả hàng nhái. Bảo hành 12 tháng tại các trung tâm ủy quyền Apple toàn quốc, hỗ trợ kỹ thuật trọn đời máy.'
 };
 
 /**
@@ -31,24 +31,23 @@ const FUNCTION_DEFINITIONS = [
     },
     {
         name: 'calculate_smart_fitting',
-        description: 'Tính toán kích cỡ quần áo (Size S/M/L/XL/XXL) dựa trên chiều cao và cân nặng',
+        description: 'Tư vấn kích cỡ màn hình iPhone & công thái học cầm nắm dựa trên khổ tay và nhu cầu sử dụng',
         parameters: {
             type: 'object',
             properties: {
-                height_cm: { type: 'number', description: 'Chiều cao tính bằng cm, ví dụ: 172' },
-                weight_kg: { type: 'number', description: 'Cân nặng tính bằng kg, ví dụ: 65' },
-                fit_preference: { type: 'string', enum: ['tight', 'regular', 'loose'] }
+                hand_size: { type: 'string', description: 'Kích cỡ bàn tay (nhỏ, vừa, lớn)' },
+                screen_preference: { type: 'string', enum: ['compact_6.1', 'standard_6.3', 'large_6.9'] }
             },
-            required: ['height_cm', 'weight_kg']
+            required: ['hand_size']
         }
     },
     {
         name: 'search_products_by_budget',
-        description: 'Tìm kiếm và lọc sản phẩm trong kho theo từ khóa và ngân sách tối đa',
+        description: 'Tìm kiếm và lọc các model iPhone hoặc phụ kiện Apple trong kho theo từ khóa và ngân sách',
         parameters: {
             type: 'object',
             properties: {
-                keyword: { type: 'string', description: 'Từ khóa sản phẩm (áo polo, quần jean, giày sneaker...)' },
+                keyword: { type: 'string', description: 'Từ khóa sản phẩm (iPhone 16 Pro Max, sạc 35W, ốp MagSafe...)' },
                 max_price_vnd: { type: 'number', description: 'Ngân sách tối đa tính bằng VNĐ' }
             },
             required: ['keyword']
@@ -336,106 +335,54 @@ class AiService {
     }
 
     /**
-     * Kỹ năng: Tư vấn kích cỡ & đo size thông minh (Master Fit Ken)
+     * Kỹ năng: Tư vấn kích cỡ màn hình iPhone & Công thái học cầm nắm (Apple Screen Ergonomics)
      */
     async handleSmartFitting(text, context, allProducts) {
         const lower = text.toLowerCase();
         
-        // 1. Trích xuất chiều cao
-        let height = 170;
-        const mMatch = lower.match(/(\d)\s*(?:m|mết)?\s*(\d{1,2})(?:\s*cm)?/i);
-        const cmMatch = lower.match(/(\d{3})\s*(?:cm|phân)/i);
-        const caoMatch = lower.match(/cao\s*(\d{2,3})/i);
-        if (mMatch) {
-            height = parseInt(mMatch[1]) * 100 + parseInt(mMatch[2]);
-        } else if (cmMatch) {
-            height = parseInt(cmMatch[1]);
-        } else if (caoMatch) {
-            height = parseInt(caoMatch[1]);
+        let screenPref = '6.3 inch (iPhone Pro / Tiêu chuẩn)';
+        let desc = 'Thiết kế vừa vặn, cầm nắm và thao tác 1 tay linh hoạt, dễ dàng bỏ túi quần áo không bị cấn hay nặng trĩu.';
+        let recommendedModel = 'iPhone 16 Pro / iPhone 15 Pro';
+        
+        if (lower.includes('to') || lower.includes('max') || lower.includes('plus') || lower.includes('pin trâu') || lower.includes('lớn') || lower.includes('chơi game')) {
+            screenPref = '6.7 - 6.9 inch (Pro Max / Plus)';
+            desc = 'Không gian hiển thị tối đa, xem phim giải trí đỉnh cao và dung lượng pin trâu dùng liên tục 2 ngày.';
+            recommendedModel = 'iPhone 16 Pro Max / iPhone 18 Pro Max';
+        } else if (lower.includes('nhỏ') || lower.includes('gọn') || lower.includes('mini') || lower.includes('1 tay') || lower.includes('nhẹ')) {
+            screenPref = '6.1 - 6.3 inch (Pro / Base)';
+            desc = 'Cực kỳ nhỏ gọn, thao tác 1 tay hoàn hảo, trọng lượng nhẹ nhàng đầm chắc và tiện di chuyển.';
+            recommendedModel = 'iPhone 16 / iPhone 15 Pro';
         }
 
-        // 2. Trích xuất cân nặng: ưu tiên số đi cùng kg, kí, cân hoặc từ khóa nặng
-        let weight = 65;
-        const kgMatch = lower.match(/(\d{2,3})\s*(?:kg|kí|cân|kilogram)/i);
-        const nangMatch = lower.match(/(?:nặng|cân nặng)\s*(\d{2,3})/i);
-        if (kgMatch) {
-            weight = parseInt(kgMatch[1]);
-        } else if (nangMatch) {
-            weight = parseInt(nangMatch[1]);
-        }
-
-        // 3. Phân loại form mặc
-        let fit = 'regular';
-        if (lower.includes('rộng') || lower.includes('oversize') || lower.includes('thoải mái')) fit = 'loose';
-        if (lower.includes('ôm') || lower.includes('slim') || lower.includes('bó')) fit = 'tight';
-
-        // 4. Thuật toán tính toán Size chuẩn vóc dáng Việt Nam
-        let recommendedSize = 'M';
-        let confidence = 96;
-        let fitDesc = 'Form suông vừa vặn thoải mái, tôn vóc dáng';
-
-        if (height < 162) {
-            recommendedSize = weight < 53 ? 'S' : (weight < 62 ? 'M' : 'L');
-        } else if (height <= 170) {
-            recommendedSize = weight < 56 ? 'S' : (weight <= 66 ? 'M' : 'L');
-        } else if (height <= 177) {
-            recommendedSize = weight < 64 ? 'M' : (weight <= 75 ? 'L' : 'XL');
-        } else if (height <= 184) {
-            recommendedSize = weight < 72 ? 'L' : (weight <= 85 ? 'XL' : 'XXL');
-        } else {
-            recommendedSize = weight <= 80 ? 'XL' : 'XXL';
-        }
-
-        if (fit === 'loose') {
-            const sizeOrder = ['S', 'M', 'L', 'XL', 'XXL'];
-            const idx = sizeOrder.indexOf(recommendedSize);
-            if (idx < sizeOrder.length - 1) recommendedSize = sizeOrder[idx + 1];
-            fitDesc = 'Form rộng rãi (Oversize) che khuyết điểm, phong cách đường phố trẻ trung';
-            confidence = 92;
-        } else if (fit === 'tight') {
-            fitDesc = 'Form ôm nhẹ (Slimfit) tôn đường nét cơ thể và bờ vai vững chãi';
-            confidence = 94;
-        }
-
-        // 5. Lọc các sản phẩm thời trang (áo, quần, áo khoác) sẵn size
-        const clothingProducts = allProducts.filter(p => {
-            const cat = (p.category || p.categoryName || '').toLowerCase();
+        const phoneProducts = allProducts.filter(p => {
             const name = (p.name || '').toLowerCase();
-            const isClothing = cat.includes('nam') || cat.includes('nữ') || cat.includes('khoác') || 
-                               name.includes('áo') || name.includes('quần') || name.includes('polo') || 
-                               name.includes('jean') || name.includes('hoodie') || name.includes('sơ mi');
-            const isExcluded = cat.includes('công nghệ') || cat.includes('điện thoại') || 
-                              cat.includes('máy tính') || cat.includes('túi') || cat.includes('balo') ||
-                              name.includes('chuột') || name.includes('sạc') || name.includes('phím');
-            return isClothing && !isExcluded;
-        });
-
-        const fashionProducts = (clothingProducts.length > 0 ? clothingProducts : allProducts).slice(0, 4);
+            return name.includes('iphone');
+        }).slice(0, 3);
 
         const customerName = context?.customerName ? `anh/chị **${context.customerName}**` : 'bạn';
 
         return {
             skill: 'AI_SMART_FITTING',
-            message: `📏 **Master Fit Ken** đã phân tích tỷ lệ vóc dáng cho ${customerName} (${height}cm - ${weight}kg):\n\n` +
-                     `🎯 **Kích cỡ khuyên dùng chuẩn nhất**: **SIZE ${recommendedSize}** (Độ chuẩn xác: **${confidence}%**)\n` +
-                     `👕 **Đặc điểm form dáng**: ${fitDesc}.\n` +
-                     `💡 **Lời khuyên mặc đẹp**: Với vóc dáng ${height}cm/${weight}kg, form áo size **${recommendedSize}** của ZShop sẽ rơi chuẩn vạt áo ngang xương hông, cầu vai vừa vặn không bị trùng hay kích nách. Dưới đây là các mẫu thời trang cao cấp sẵn size ${recommendedSize} cho bạn:`,
+            message: `📱 **Chuyên Gia Công Thái Học Apple (ZShop)** tư vấn kích cỡ iPhone tối ưu cho ${customerName}:\n\n` +
+                     `🎯 **Kích thước màn hình khuyên dùng**: **${screenPref}**\n` +
+                     `✨ **Cảm giác cầm nắm & Trải nghiệm**: ${desc}\n` +
+                     `💡 **Dòng máy đề xuất**: **${recommendedModel}**. Dưới đây là các phiên bản máy VN/A chính hãng sẵn hàng tại kho ZShop:`,
             sizeFitting: {
-                recommendedSize,
-                confidence,
-                fitDescription: fitDesc,
+                recommendedSize: screenPref,
+                confidence: 98,
+                fitDescription: desc,
                 measurementsUsed: {
-                    height,
-                    weight,
-                    fitPreference: fit === 'loose' ? 'Rộng (Oversize)' : fit === 'tight' ? 'Ôm nhẹ' : 'Vừa vặn'
+                    height: 170,
+                    weight: 65,
+                    fitPreference: screenPref
                 },
                 details: {
-                    lengthFit: 'Dài áo vừa qua cạp quần 3-4cm, che khuyết điểm bụng cực tốt.',
-                    chestFit: 'Độ rộng vòng ngực dư 4-6cm cử động vươn vai êm ái.',
-                    shoulderFit: 'Đường may vai rơi đúng mỏm cùng vai, tạo dáng chữ V đứng form.'
+                    lengthFit: 'Thao tác vuốt chạm cạnh trên màn hình và Dynamic Island dễ dàng.',
+                    chestFit: 'Khung viền Titanium / Nhôm vát cạnh mềm mại, không gây cấn tay khi dùng lâu.',
+                    shoulderFit: 'Trọng lượng phân bổ cân bằng, bỏ túi gọn gàng tiện lợi.'
                 }
             },
-            products: fashionProducts
+            products: phoneProducts
         };
     }
 
@@ -555,7 +502,7 @@ class AiService {
     }
 
     /**
-     * Kỹ năng: Báo cáo kinh doanh (Admin/Seller Mode)
+     * Kỹ năng: Báo cáo kinh doanh (Admin Mode - Chủ cửa hàng)
      */
     async handleSalesAnalytics(allProducts) {
         const lowStockProducts = allProducts.filter(p => p.stock <= 40).slice(0, 3);

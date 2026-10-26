@@ -121,8 +121,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegisterSuccess, onBack, 
           <div className="w-16 h-16 bg-gradient-to-tr from-brand-600 to-sky-400 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-200 text-white mb-3">
             <ShoppingBag size={32} />
           </div>
-          <h2 className="text-gray-900 font-bold text-2xl tracking-tight">ZShop E-Commerce</h2>
-          <p className="text-gray-500 text-sm mt-1 text-center">Đăng ký tài khoản Khách hàng thành viên để tích điểm VIP & mua sắm 3D</p>
+          <h2 className="text-gray-900 font-bold text-2xl tracking-tight">Thế Giới iPhone — ZShop</h2>
+          <p className="text-gray-500 text-sm mt-1 text-center">Đăng ký tài khoản Khách hàng thành viên để tích điểm VIP & nhận ưu đãi chính hãng Apple</p>
         </div>
 
         {/* Thông báo Lỗi / Thành công */}

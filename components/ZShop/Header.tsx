@@ -15,7 +15,6 @@ interface HeaderProps {
   onOpenSellerChannel?: () => void;
   onBecomeSeller?: () => void;
   onProductClick?: (id: string) => void;
-  onOpenLanding3D?: () => void;
   onGoToAdmin?: () => void;
   onViewOrders?: () => void;
   onGoToWarehouse?: () => void;
@@ -46,7 +45,6 @@ const Header: React.FC<HeaderProps> = ({
   onOpenSellerChannel: _onOpenSellerChannel,
   onBecomeSeller: _onBecomeSeller,
   onProductClick,
-  onOpenLanding3D: _onOpenLanding3D,
   onGoToAdmin,
   onViewOrders,
   onGoToWarehouse,

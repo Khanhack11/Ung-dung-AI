@@ -1,5 +1,5 @@
 -- ============================================================================
--- HỆ THỐNG CỬA HÀNG THƯƠNG MẠI ĐIỆN TỬ 3D & BÁN LẺ ZSHOP (SINGLE-STORE MODEL)
+-- HỆ THỐNG CỬA HÀNG THƯƠNG MẠI ĐIỆN TỬ & BÁN LẺ THẾ GIỚI IPHONE - ZSHOP (SINGLE-STORE MODEL)
 -- Mô hình 4 Tác nhân chuẩn UML:
 --   1. ADMIN     : Admin (Chủ cửa hàng)
 --   2. SALES     : Nhân viên Bán hàng (POS & CSKH)
