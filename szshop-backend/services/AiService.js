@@ -440,38 +440,30 @@ class AiService {
     }
 
     /**
-     * Kỹ năng: Tư vấn phối đồ & thời trang (Stylist Emma)
+     * Kỹ năng: Tư vấn Combo Phụ Kiện Apple & Thiết Bị (TechPro Ecosystem Advisor)
      */
     async handleFashionStylist(text, allProducts) {
-        // Tìm kiếm các món phối theo combo chuẩn: Áo (Top) + Quần/Váy (Bottom) + Phụ kiện/Giày (Accessory)
-        const topItem = allProducts.find(p => {
+        // Tìm kiếm các món phối theo combo hệ sinh thái: iPhone + Củ sạc/Cáp + Tai nghe/Ốp lưng
+        const phoneItem = allProducts.find(p => {
             const name = (p.name || '').toLowerCase();
-            const cat = (p.category || '').toLowerCase();
-            return (name.includes('áo') || name.includes('polo') || name.includes('sơ mi') || name.includes('hoodie') || name.includes('thun')) && !cat.includes('công nghệ');
-        });
+            return name.includes('iphone 16') || name.includes('iphone 18') || name.includes('iphone 15');
+        }) || allProducts[0];
 
-        const bottomItem = allProducts.find(p => {
+        const chargerItem = allProducts.find(p => {
             const name = (p.name || '').toLowerCase();
-            const cat = (p.category || '').toLowerCase();
-            return (name.includes('quần') || name.includes('jean') || name.includes('tây') || name.includes('short') || name.includes('váy')) && !cat.includes('công nghệ');
+            return name.includes('sạc') || name.includes('gan') || name.includes('adapter');
         });
 
         const accessoryItem = allProducts.find(p => {
             const name = (p.name || '').toLowerCase();
-            const cat = (p.category || '').toLowerCase();
-            return (name.includes('giày') || name.includes('sneaker') || name.includes('túi') || name.includes('đồng hồ') || name.includes('kính')) && !cat.includes('công nghệ');
+            return (name.includes('tai nghe') || name.includes('airpods') || name.includes('ốp') || name.includes('magsafe')) && p.id !== phoneItem?.id;
         });
 
-        let topPicks = [topItem, bottomItem, accessoryItem].filter(Boolean);
+        let topPicks = [phoneItem, chargerItem, accessoryItem].filter(Boolean);
 
-        // Bổ sung nếu thiếu để luôn đủ 3 món thời trang thanh lịch
+        // Bổ sung nếu thiếu để luôn đủ 3 món phụ kiện công nghệ
         if (topPicks.length < 3) {
-            const remaining = allProducts.filter(p => {
-                const cat = (p.category || '').toLowerCase();
-                const name = (p.name || '').toLowerCase();
-                const isTech = cat.includes('công nghệ') || cat.includes('điện thoại') || cat.includes('máy tính') || name.includes('sạc') || name.includes('chuột') || name.includes('phím');
-                return !isTech && !topPicks.some(t => t.id === p.id);
-            });
+            const remaining = allProducts.filter(p => !topPicks.some(t => t.id === p.id));
             topPicks = topPicks.concat(remaining.slice(0, 3 - topPicks.length));
         }
 
@@ -479,15 +471,15 @@ class AiService {
 
         return {
             skill: 'AI_FASHION_STYLIST',
-            message: `👗 **Stylist Emma** gợi ý cho bạn set trang phục thịnh hành được phối màu hài hòa:\n\n` +
-                     `✨ **Phong cách**: Smart Casual & Lịch lãm hiện đại.\n` +
-                     `🎯 **Hoàn cảnh**: Phù hợp cả đi làm, gặp gỡ đối tác hay cafe dạo phố cuối tuần.\n` +
-                     `🎨 **Bí quyết phối màu**: Kết hợp gam màu trung tính (đen, trắng, xanh navy) tạo cảm giác thanh lịch, phối cùng giày sneaker trắng hoặc giày lười da bóng cao cấp để tạo điểm nhấn cuốn hút!`,
+            message: `⚡ **TechPro Apple Advisor** gợi ý cho bạn Combo Hệ Sinh Thái Apple hoàn hảo nhất:\n\n` +
+                     `✨ **Combo Flagship**: Sự kết hợp hoàn hảo giữa hiệu năng đỉnh cao của iPhone và phụ kiện sạc nhanh MagSafe chính hãng.\n` +
+                     `🎯 **Đặc quyền**: Tối ưu tốc độ sạc PD 35W Dual, bảo vệ pin chuẩn 100%, đồng bộ liền mạch qua iCloud & Dynamic Island.\n` +
+                     `🎨 **Ưu đãi Combo**: Mua trọn bộ tiết kiệm ngay **8%** so với mua lẻ từng món!`,
             outfitCombo: {
-                id: `outfit-${Date.now()}`,
-                title: 'Set Đồ Thời Trang Thanh Lịch & Năng Động',
-                style: 'Smart Casual / Modern Minimalist',
-                occasion: 'Đi làm, hẹn hò, dạo phố',
+                id: `combo-${Date.now()}`,
+                title: 'Combo Hệ Sinh Thái Apple Chuẩn Flagship',
+                style: 'Apple Ecosystem / Pro Performance',
+                occasion: 'Công việc, sáng tạo nội dung, giải trí đỉnh cao',
                 items: topPicks,
                 totalPrice: totalPrice,
                 discountPrice: Math.round(totalPrice * 0.92)
@@ -509,7 +501,7 @@ class AiService {
                      `• **Trạng thái**: Đang vận chuyển bởi ZShop Express Fast 24/7.\n` +
                      `• **Mã vận đơn**: ZSE-88294719VN\n` +
                      `• **Dự kiến giao hàng**: Ngày mai trước 18:00 (Được đồng kiểm bóc kiện xem hàng trước khi thanh toán).\n` +
-                     `• **Hỗ trợ đổi trả (UC10)**: Đổi size miễn phí trong 7 ngày nếu không vừa.`,
+                     `• **Hỗ trợ đổi trả & bảo hành (UC10)**: 1 đổi 1 trong 30 ngày nếu phát sinh lỗi phần cứng chính hãng.`,
             orderInfo: {
                 orderId: orderId,
                 status: 'Đang vận chuyển (SHIPPING)',
@@ -570,18 +562,18 @@ class AiService {
         
         return {
             skill: 'SALES_ANALYTICS',
-            message: `📊 **Báo Cáo Bán Hàng & Vận Hành ZShop (Cập Nhật Thời Gian Thực)**:\n\n` +
-                     `• **Tổng doanh thu tuần này**: **48.650.000đ** (Tăng 18.5% so với tuần trước)\n` +
+            message: `📊 **Báo Cáo Bán Hàng & Vận Hành Thế Giới iPhone - ZShop (Cập Nhật Thời Gian Thực)**:\n\n` +
+                     `• **Tổng doanh thu tuần này**: **486.500.000đ** (Tăng 18.5% so với tuần trước)\n` +
                      `• **Tổng số đơn hàng**: **32 đơn** (Tỷ lệ thanh toán thành công: 97.2%)\n` +
-                     `• **Mặt hàng bán chạy nhất**: Áo Polo Gucci Maxi GG & Áo Thun DIOR\n` +
+                     `• **Mặt hàng bán chạy nhất**: iPhone 16 Pro Max 256GB Desert Titanium & iPhone 18 Pro Max\n` +
                      `• ⚠️ **Cảnh báo tồn kho**: Có ${lowStockProducts.length} mặt hàng sắp hết kho cần bổ sung phiếu nhập kho (UC05)!`,
             analytics: {
-                totalRevenue: 48650000,
+                totalRevenue: 486500000,
                 todayOrders: 14,
                 topSelling: [
-                    { name: 'Áo Thun DIOR - Chính Hãng', sold: 310, revenue: 585590000 },
-                    { name: 'Áo Polo Nam Gucci Maxi GG Silk Cotton', sold: 42, revenue: 504000000 },
-                    { name: 'Quần Jeans Slimfit Rách Gối Nam', sold: 450, revenue: 247500000 }
+                    { name: 'iPhone 16 Pro Max 256GB Desert Titanium', sold: 310, revenue: 10850000000 },
+                    { name: 'iPhone 18 Pro Max 1TB Cosmic Orange', sold: 42, revenue: 2184000000 },
+                    { name: 'Củ sạc nhanh Apple 35W Dual USB-C', sold: 450, revenue: 445500000 }
                 ],
                 lowStock: lowStockProducts.map(p => ({ name: p.name, stock: p.stock, category: p.category }))
             }
@@ -898,7 +890,7 @@ class AiService {
         } else if (apiKey || process.env.GEMINI_API_KEY) {
             // 6. Thử gọi External AI (Google Gemini REST API) với RAG Grounding & System Prompt Hardening
             const catalogSummary = allProducts.slice(0, 15).map(p => `- ${p.name} (${p.category}): ${p.price.toLocaleString('vi-VN')}đ [Kho: ${p.stock} cái]`).join('\n');
-            const systemPrompt = `Bạn là Trợ lý AI Bán Hàng & Tư Vấn Thời Trang cao cấp của ZShop (E-Commerce 3D & SZ-Payment Gateway).
+            const systemPrompt = `Bạn là Trợ lý AI Chuyên Gia Tư Vấn & Bán Hàng Flagship của Thế Giới iPhone - ZShop (Chuyên các dòng iPhone chính hãng VN/A và Phụ kiện Apple cao cấp).
 QUY TẮC BẮT BUỘC (SYSTEM PROMPT HARDENING - CHƯƠNG 8 SLIDE 6 & 27):
 1. Trả lời thân thiện, lịch thiệp, thông minh bằng tiếng Việt.
 2. Dựa trên dữ liệu thực tế từ cửa hàng ZShop (Grounding với RAG):

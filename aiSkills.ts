@@ -1669,10 +1669,10 @@ export class AISkillEngine {
     const finalSize = sizeHierarchy[idx];
 
     const fitDescription = fitPreference === 'loose'
-      ? `Với chiều cao ${height}cm và cân nặng ${weight}kg, form ${finalSize} mang lại cảm giác rộng rãi, phóng khoáng chuẩn phong cách Streetwear.`
+      ? `Với chiều cao ${height}cm và khổ tay tương ứng, màn hình lớn 6.9 inch (Pro Max / Plus) mang lại không gian hiển thị rộng rãi, giải trí và pin trâu đỉnh chóp.`
       : fitPreference === 'tight'
-      ? `Với chiều cao ${height}cm và cân nặng ${weight}kg, form ${finalSize} sẽ tôn trọn đường nét cơ thể săn chắc, vừa vặn không bị thừa vải.`
-      : `Với chiều cao ${height}cm và cân nặng ${weight}kg, form ${finalSize} là kích cỡ tỷ lệ vàng, vừa vặn vai và chiều dài áo chuẩn ngang hông.`;
+      ? `Với chiều cao ${height}cm và khổ tay nhỏ gọn, màn hình tiêu chuẩn 6.1 - 6.3 inch (Pro / Base) sẽ vừa vặn cầm nắm 1 tay cực kỳ chắc chắn, tiện bỏ túi.`
+      : `Với chiều cao ${height}cm và vóc dáng trung bình, dòng máy 6.3 inch hoặc 6.7 inch là kích cỡ tỷ lệ vàng, cầm nắm thoải mái và cân đối hoàn hảo.`;
 
     return {
       recommendedSize: finalSize,
@@ -1681,12 +1681,12 @@ export class AISkillEngine {
       measurementsUsed: {
         height,
         weight,
-        fitPreference: fitPreference === 'loose' ? 'Rộng thoải mái (Oversize)' : fitPreference === 'tight' ? 'Ôm sát (Slimfit)' : 'Vừa vặn tiêu chuẩn (Regular)'
+        fitPreference: fitPreference === 'loose' ? 'Màn hình lớn (Pro Max/Plus)' : fitPreference === 'tight' ? 'Gọn gàng 1 tay (Pro/Base)' : 'Kích cỡ tiêu chuẩn'
       },
       details: {
-        chestFit: `Vòng ngực vừa vặn, cử động thoải mái (dao động +/- 2cm)`,
-        lengthFit: `Chiều dài áo chạm ngang xương hông (${height > 170 ? '70-72cm' : '66-68cm'})`,
-        shoulderFit: `Đường may nối vai nằm chuẩn mép cơ delta`
+        chestFit: `Độ bám tay đầm chắc, viền Titanium vát cạnh êm ái`,
+        lengthFit: `Thao tác vuốt chạm cạnh trên màn hình dễ dàng`,
+        shoulderFit: `Bỏ túi quần / túi áo không bị cấn hay nặng trĩu`
       }
     };
   }
@@ -2162,7 +2162,7 @@ Dựa trên phân tích tốc độ tiêu thụ (run-rate) 30 ngày qua:
 - **Tăng trưởng Doanh thu**: +18.5% so với cùng kỳ tháng trước nhờ danh mục Củ sạc GaN và Phụ kiện MagSafe.
 - **Biên lợi nhuận gộp (Gross Margin)**: Đạt **36.8%**, dẫn đầu phân khúc phụ kiện điện tử.
 - **Tỷ lệ đổi trả & hoàn hàng (UC10)**: Duy trì ở mức cực thấp **1.2%** (ngưỡng an toàn < 3%).
-- **Dự báo 7 ngày tới**: Dự kiến doanh thu đạt ~320.000.000đ khi mở bán đợt phụ kiện iPhone 16 / S24 Ultra.
+- **Dự báo 7 ngày tới**: Dự kiến doanh thu đạt ~320.000.000đ khi mở bán đợt phụ kiện iPhone 16 Series & iPhone 18 Series.
 - **Khuyến nghị chiến lược**: Tăng lượng nhập kho củ sạc GaN 65W và cáp dù E-Marker 100W, đồng thời chạy combo kèm smartphone để tăng Average Order Value (AOV).`,
         businessInsights: {
           revenueGrowth: '+18.5% MoM',

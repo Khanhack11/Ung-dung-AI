@@ -94,8 +94,8 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
   // Return Form state
   const [returnType, setReturnType] = useState<'EXCHANGE_SIZE' | 'REFUND'>('EXCHANGE_SIZE');
-  const [exchangeSize, setExchangeSize] = useState<string>('XL');
-  const [returnReason, setReturnReason] = useState<string>('Không vừa size, muốn đổi size khác');
+  const [exchangeSize, setExchangeSize] = useState<string>('256GB');
+  const [returnReason, setReturnReason] = useState<string>('Muốn nâng cấp dung lượng GB / đổi màu máy');
   const [refundBankInfo, setRefundBankInfo] = useState<string>('MBBank - 0901234567 - NGUYEN QUOC KHANH');
   const [returnSuccessMsg, setReturnSuccessMsg] = useState<string | null>(null);
 
@@ -302,7 +302,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-end text-xs text-slate-500">
             <ShieldCheck size={16} className="text-emerald-600 shrink-0" />
-            <span>Đổi size miễn phí tận nhà trong 7 ngày • 100% Chính hãng</span>
+            <span>1 đổi 1 trong 30 ngày • 100% iPhone VN/A Chính hãng Apple</span>
           </div>
         </div>
 
@@ -734,14 +734,14 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
               </p>
             </div>
 
-            {/* Fit Feedback (Chuyên thời trang) */}
+            {/* Tình trạng ngoại quan máy */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">Độ vừa vặn thực tế khi mặc:</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">Tình trạng ngoại quan máy:</label>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { id: 'tight', label: 'Hơi chật' },
-                  { id: 'fit', label: 'Chuẩn size vừa vặn' },
-                  { id: 'loose', label: 'Rộng thoải mái' },
+                  { id: 'tight', label: 'Nguyên seal mới 100%' },
+                  { id: 'fit', label: 'Máy đẹp like new' },
+                  { id: 'loose', label: 'Có trầy xước nhẹ' },
                 ].map(item => (
                   <button
                     key={item.id}
@@ -761,12 +761,12 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
             {/* Quality Feedback */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">Chất liệu vải & Gia công:</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">Chất lượng phần cứng & Pin:</label>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { id: 'good', label: 'Dày dặn cao cấp' },
-                  { id: 'normal', label: 'Mát mẻ, thoáng khí' },
-                  { id: 'poor', label: 'Cần cải thiện thêm' },
+                  { id: 'good', label: 'Pin 100% / Rất trâu' },
+                  { id: 'normal', label: 'Màn hình & cảm ứng mượt' },
+                  { id: 'poor', label: 'Cần hỗ trợ kỹ thuật' },
                 ].map(item => (
                   <button
                     key={item.id}
@@ -791,7 +791,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                 rows={3}
                 value={reviewComment}
                 onChange={(e) => setReviewComment(e.target.value)}
-                placeholder="Áo mặc lên form rất tôn dáng, vải sờ mịn tay, giao hàng siêu nhanh đóng gói cẩn thận..."
+                placeholder="Máy nguyên seal VN/A cực đẹp, pin 100%, bảo hành chính hãng Apple, đóng gói cẩn thận giao hàng hỏa tốc..."
                 className="w-full p-3 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none"
               />
             </div>
@@ -878,10 +878,10 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                   >
                     <div className="flex items-center gap-1.5 text-xs font-black text-brand-700">
                       <RefreshCw size={14} />
-                      <span>Đổi Size Tận Nhà (0đ)</span>
+                      <span>1 Đổi 1 Máy Mới (0đ)</span>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-1 leading-normal">
-                      Shipper mang size mới tới đổi trực tiếp size cũ, không tốn phí ship.
+                      Shipper mang máy mới nguyên seal tới thẩm định và đổi trực tiếp tận nhà, miễn phí ship.
                     </p>
                   </button>
 
@@ -913,7 +913,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                   />
                   <div className="flex-1 min-w-0 text-xs">
                     <p className="font-bold text-slate-900 truncate">{returnModalData.item.name}</p>
-                    <p className="text-slate-500">Size hiện tại: <strong className="text-slate-700">{returnModalData.item.size}</strong> • Số lượng: 1</p>
+                    <p className="text-slate-500">Dung lượng: <strong className="text-slate-700">{returnModalData.item.size || '256GB'}</strong> • Số lượng: 1</p>
                   </div>
                   <div className="font-mono font-bold text-rose-600 text-xs">
                     {new Intl.NumberFormat('vi-VN').format(returnModalData.item.price)}đ
@@ -924,10 +924,10 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                 {returnType === 'EXCHANGE_SIZE' ? (
                   <div className="space-y-3 bg-brand-50/40 p-4 rounded-2xl border border-brand-100">
                     <label className="block text-xs font-bold text-slate-800">
-                      Chọn kích thước (Size) bạn muốn đổi sang:
+                      Chọn dung lượng (Storage) muốn nâng cấp / đổi sang:
                     </label>
                     <div className="flex gap-2">
-                      {['S', 'M', 'L', 'XL', 'XXL'].map((sz) => (
+                      {['128GB', '256GB', '512GB', '1TB'].map((sz) => (
                         <button
                           key={sz}
                           type="button"
@@ -975,10 +975,10 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                     onChange={(e) => setReturnReason(e.target.value)}
                     className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:ring-2 focus:ring-brand-500 font-medium"
                   >
-                    <option value="Không vừa size, muốn đổi size khác">Không vừa size, muốn đổi size khác</option>
-                    <option value="Hàng không giống hình ảnh mô tả">Hàng không giống hình ảnh mô tả</option>
-                    <option value="Hàng bị lỗi vải / chỉ may / sứt nút">Hàng bị lỗi vải / chỉ may / sứt nút</option>
-                    <option value="Giao nhầm màu sắc / sai sản phẩm">Giao nhầm màu sắc / sai sản phẩm</option>
+                    <option value="Muốn nâng cấp dung lượng GB / đổi màu máy">Muốn nâng cấp dung lượng GB / đổi màu máy</option>
+                    <option value="Hàng không đúng mô tả / sai mã máy VN/A">Hàng không đúng mô tả / sai mã máy VN/A</option>
+                    <option value="Máy có lỗi phần cứng (màn hình, camera, loa, mic...)">Máy có lỗi phần cứng (màn hình, camera, loa, mic...)</option>
+                    <option value="Giao nhầm phiên bản dung lượng / sai màu máy">Giao nhầm phiên bản dung lượng / sai màu máy</option>
                     <option value="Đổi ý, không còn nhu cầu sử dụng">Đổi ý, không còn nhu cầu sử dụng</option>
                   </select>
                 </div>

@@ -2,7 +2,7 @@
 export default {
   content: [
     "./index.html",
-    "./*.tsx",
+    "./*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -24,7 +24,8 @@ export default {
         32: '128px',
       },
       fontFamily: {
-        primary: ['Arial', 'Helvetica', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
+        primary: ['Inter', 'sans-serif'],
       },
       fontSize: {
         base: ['14px', '16.8px'],
@@ -41,7 +42,7 @@ export default {
           subtle: '#f1f5f9',
         },
         text: {
-          secondary: '#0284c7',
+          secondary: '#9a7b4f',
           inverse: '#ffffff',
         },
         border: {
@@ -49,30 +50,36 @@ export default {
           light: '#e2e8f0',
         },
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7', // Sky blue chính
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-          DEFAULT: '#0284c7',
+          50: '#faf8f5',
+          100: '#f2ece1',
+          200: '#e5d9c3',
+          300: '#d4b996',
+          400: '#c5a77c',
+          500: '#b89768',
+          600: '#9a7b4f', // Luxury Desert Titanium Gold
+          700: '#7d623c',
+          800: '#524025',
+          900: '#26231f',
+          DEFAULT: '#9a7b4f',
         },
         brand: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7', // Sky blue chính
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-          DEFAULT: '#0284c7',
+          50: '#faf8f5',
+          100: '#f2ece1',
+          200: '#e5d9c3',
+          300: '#d4b996',
+          400: '#c5a77c',
+          500: '#b89768',
+          600: '#9a7b4f', // Luxury Desert Titanium Gold
+          700: '#7d623c',
+          800: '#524025',
+          900: '#26231f',
+          DEFAULT: '#9a7b4f',
+        },
+        titanium: {
+          dark: '#1c1b18',
+          charcoal: '#272521',
+          gold: '#d4b996',
+          sand: '#f5f3ef',
         }
       },
       transitionDuration: {
@@ -83,4 +90,3 @@ export default {
   },
   plugins: [],
 }
-
