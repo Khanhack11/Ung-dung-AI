@@ -82,7 +82,7 @@ def build_docx(output_path):
     run_main_title.font.bold = True
     run_main_title.font.color.rgb = PRIMARY
 
-    run_proj = p_title.add_run("HỆ THỐNG THẾ GIỚI IPHONE (ZSHOP) - SINGLE-STORE 3D RETAIL & MULTI-AGENT RAG")
+    run_proj = p_title.add_run("HỆ THỐNG THẾ GIỚI IPHONE (ZSHOP) - BENTO GRID RETAIL & MULTI-AGENT RAG")
     run_proj.font.name = "Arial"
     run_proj.font.size = Pt(13)
     run_proj.font.bold = True
@@ -94,7 +94,7 @@ def build_docx(output_path):
     run_meta = p_meta.add_run(
         "Nhóm thực hiện: Nhóm 01 | Nhóm 2 Sinh viên\n"
         "Trưởng nhóm: Nguyễn Quốc Khánh (MSSV: DTC245220042) - Phụ trách Backend, CSDL 3NF, SZ-Payment, Multi-Agent RAG Python & Critic Gate\n"
-        "Thành viên: Mẫn Bá Hảo - Phụ trách Storefront React 19, 3D Canvas, Portal 4 Vai trò, Giỏ hàng & Luồng Đổi trả/Nhập kho\n"
+        "Thành viên: Mẫn Bá Hảo - Phụ trách Storefront React 19, Apple Bento Grid, Portal 4 Vai trò, Giỏ hàng & Luồng Đổi trả/Nhập kho\n"
         "Thời gian vấn đáp: Ngày 29/10/2026 | Phiên bản hệ thống: V2.0 (Đồng bộ 100% mã nguồn thực tế)"
     )
     run_meta.font.name = "Arial"
@@ -269,7 +269,7 @@ def build_docx(output_path):
         "1.1 Phân tích đúng nghiệp vụ: "
     )
     add_bullet(
-        "Hệ thống phân quyền theo ma trận RBAC với 4 tác nhân chuẩn UML 2.5: (1) CUSTOMER: Mua sắm 3D, chat AI, đặt hàng, tích điểm VIP; (2) SALES: Nhân viên bán hàng tại quầy POS, tra cứu CRM VIP, duyệt đổi trả 1-1; (3) WAREHOUSE: Lập phiếu nhập kho chuẩn NK-YYYY-XXXX, kiểm kho, sử dụng AI Stock Copilot; (4) ADMIN: Toàn quyền quản trị, xem báo cáo doanh thu và ra quyết định cùng AI BI. Yêu cầu phi chức năng (NFR): Tốc độ phản hồi API < 500ms, cơ chế 3-Tier Smart Offline Fallback đảm bảo vận hành 100% không gián đoạn.",
+        "Hệ thống phân quyền theo ma trận RBAC với 4 tác nhân chuẩn UML 2.5: (1) CUSTOMER: Mua sắm online, chat AI, đặt hàng, tích điểm VIP; (2) SALES: Nhân viên bán hàng tại quầy POS, tra cứu CRM VIP, duyệt đổi trả 1-1; (3) WAREHOUSE: Lập phiếu nhập kho chuẩn NK-YYYY-XXXX, kiểm kho, sử dụng AI Stock Copilot; (4) ADMIN: Toàn quyền quản trị, xem báo cáo doanh thu và ra quyết định cùng AI BI. Yêu cầu phi chức năng (NFR): Tốc độ phản hồi API < 500ms, cơ chế 3-Tier Smart Offline Fallback đảm bảo vận hành 100% không gián đoạn.",
         "1.2 Yêu cầu chức năng & phi chức năng đầy đủ: "
     )
     add_bullet(
@@ -351,7 +351,7 @@ def build_docx(output_path):
 
     # TIÊU CHÍ 4
     add_h2("TIÊU CHÍ 4: SẢN PHẨM, BÁO CÁO VÀ DEMO TRỰC TIẾP (CLO5 - 2.0đ)")
-    add_bullet("Giao diện Bento Grid đậm chất Apple, tích hợp không gian 3D tương tác xoay 360 độ, Chatbot UI chia 4 Tab tiện lợi, định dạng tiền tệ formatVND() chuẩn mực không vỡ khung.", "4.1 Giao diện dễ sử dụng (UI/UX): ")
+    add_bullet("Giao diện Bento Grid đậm chất Apple Store, tích hợp công nghệ Đồng bộ Màu sắc Động (Dynamic Color-Sync Engine), Chatbot UI chia 4 Tab tiện lợi, định dạng tiền tệ formatVND() chuẩn mực không vỡ khung.", "4.1 Giao diện dễ sử dụng (UI/UX): ")
     add_bullet("Có tài liệu README.md chi tiết, hỗ trợ lệnh chạy một bước 'npm run dev:all' (chạy song song Backend 5000 và Frontend 5173). Mã nguồn được quản lý phiên bản bài bản trên Git.", "4.2 Triển khai, README & Git: ")
     add_bullet("Bộ tài liệu kỹ thuật đồ sộ trong thư mục docs/: Tài liệu SRS 97KB, tài liệu kiến trúc UML 2.5, bản thiết kế CSDL 3NF, kế hoạch kiểm thử và báo cáo an ninh mạng.", "4.3 Báo cáo kỹ thuật đầy đủ: ")
     add_bullet(
@@ -389,7 +389,7 @@ def build_docx(output_path):
         "Trưởng nhóm - Nguyễn Quốc Khánh (MSSV: DTC245220042): "
     )
     add_bullet(
-        "Phụ trách Frontend React 19 (Showroom 3D iPhone, Bento Grid, ChatBot UI 4 Tab), xây dựng giao diện phân quyền 4 tác nhân (Admin Dashboard, CSKH/POS Portal, Warehouse Portal), Giỏ hàng thông minh và quy trình Đổi trả kèm Thu hồi điểm tích lũy VIP.",
+        "Phụ trách Frontend React 19 (Showroom Apple Bento Grid, Dynamic Color-Sync, ChatBot UI 4 Tab), xây dựng giao diện phân quyền 4 tác nhân (Admin Dashboard, CSKH/POS Portal, Warehouse Portal), Giỏ hàng thông minh và quy trình Đổi trả kèm Thu hồi điểm tích lũy VIP.",
         "Thành viên - Mẫn Bá Hảo: "
     )
 
