@@ -28,7 +28,7 @@ if __name__ == '__main__':
     print("   3. Analyst Agent")
     print("   4. Database Agent (MySQL)")
     print("   5. RAG Agent (Vector DB - ChromaDB)")
-    print("   6. Recommendation Agent (Outfit & Cross-sell)")
+    print("   6. Recommendation Agent (Apple Ecosystem & Cross-sell)")
     print("   7. Reasoning Agent")
     print("   8. Critic Agent (ACCEPT Gate & Reflection Loop)")
     print("   9. Response Agent -> User")

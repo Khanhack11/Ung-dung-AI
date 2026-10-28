@@ -26,6 +26,6 @@ Array of retrieved product records from `Product Retrieval Skill`.
 ## Output Format
 ```text
 DANH SÁCH SẢN PHẨM PHÙ HỢP TỪ CSDL (Tổng: 2 sản phẩm):
-1. [ID: 3] Áo Hoodie Streetwear Unisex - Giá: 420.000 VNĐ | Danh mục: Áo khoác & Hoodie | Tồn kho: 45
-2. [ID: 2] Quần Jeans Slimfit Rách Gối - Giá: 550.000 VNĐ | Danh mục: Thời trang nam | Tồn kho: 120
+1. [ID: 1] iPhone 16 Pro Max 256GB Titan Sa Mạc - Giá: 34.990.000 VNĐ | Danh mục: iPhone Flagship | Tồn kho: 45
+2. [ID: 25] Củ Sạc Nhanh Apple GaN 65W Ba Cổng Type-C - Giá: 450.000 VNĐ | Danh mục: Phụ kiện sạc & bảo vệ | Tồn kho: 120
 ```

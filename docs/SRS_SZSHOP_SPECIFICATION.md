@@ -1116,7 +1116,7 @@ erDiagram
    - `status` (VARCHAR(30), Default `'ACTIVE'`): Trạng thái công tác (`ACTIVE`, `LOCKED`).
 5. **Bảng `Categories` (Danh mục ngành hàng):**
    - `id` (INT, Primary Key, Identity): Mã danh mục sản phẩm.
-   - `name` (NVARCHAR(100), Not Null): Tên danh mục (Thời trang nam, Thời trang nữ, Giày dép, Phụ kiện công nghệ).
+   - `name` (NVARCHAR(100), Not Null): Tên danh mục (iPhone Flagship Pro/Pro Max, iPhone Tiêu chuẩn & Plus, iPhone Cổ điển Sưu tầm, Phụ kiện Apple chính hãng).
 6. **Bảng `Products` (Sản phẩm kinh doanh của Cửa hàng):**
    - `id` (INT, Primary Key, Identity): Mã sản phẩm.
    - `category_id` (INT, Foreign Key -> `Categories.id`, Null): Ngành hàng tương ứng.

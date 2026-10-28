@@ -18,8 +18,8 @@ export type AISkillType =
   | 'INVENTORY_RECOMMENDATION'   // Kỹ năng mới: AI Khuyến nghị kho (UC08)
   | 'AI_COPYWRITER'              // Kỹ năng 5: Tự động sáng tạo bài viết sản phẩm (Seller)
   | 'PROMOTION_ADVISOR'          // Kỹ năng 6: Tư vấn mã giảm giá & ưu đãi
-  | 'AI_FASHION_STYLIST'         // Chuyên môn Stylist: Phối đồ & Lookbook
-  | 'AI_SMART_FITTING'           // Chuyên môn Đo Size: Phân tích kích cỡ & vóc dáng
+  | 'AI_FASHION_STYLIST'         // Kỹ năng Combo: Tư vấn Combo Hệ sinh thái Apple (Tech Stylist)
+  | 'AI_SMART_FITTING'           // Kỹ năng Công thái học: Tư vấn kích thước màn hình & Cầm nắm vừa tay (Device Ergonomics)
   | 'AI_VIP_LOYALTY'             // Chuyên môn VIP: Quyền lợi hạng thẻ & điểm tích lũy
   | 'GENERAL_CONSULT';           // Tư vấn chung
 

@@ -141,7 +141,7 @@ def get_architecture():
                 {"name": "Analyst Agent", "role": "Ý định & Bóc tách thực thể"},
                 {"name": "Database Agent", "role": "Truy vấn CSDL quan hệ (MySQL)"},
                 {"name": "RAG Agent", "role": "Truy vấn Vector DB (ChromaDB)"},
-                {"name": "Recommendation Agent", "role": "Gợi ý phối đồ, Cross-sell & Up-sell"},
+                {"name": "Recommendation Agent", "role": "Gợi ý Combo Hệ sinh thái Apple, Cross-sell & Up-sell"},
                 {"name": "Reasoning Agent", "role": "Tư duy tổng hợp & Đề xuất giải pháp"},
                 {"name": "Critic Agent", "role": "Thẩm định, kiểm tra chéo & Ra quyết định ACCEPT / REVISE"}
             ],

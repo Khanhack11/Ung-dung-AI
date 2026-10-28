@@ -867,10 +867,10 @@ ${catalogSummary}
         }
 
         if (!result) {
-            if (persona === 'STYLIST' || lower.includes('phối') || lower.includes('set') || lower.includes('outfit') || lower.includes('mặc gì') || lower.includes('đi làm') || lower.includes('đi tiệc')) {
+            if (persona === 'STYLIST' || lower.includes('phối') || lower.includes('combo') || lower.includes('set') || lower.includes('hệ sinh thái') || lower.includes('phụ kiện') || lower.includes('outfit')) {
                 result = await this.handleFashionStylist(query, allProducts);
                 metaOptions = {
-                    integration_mode: 'Agent-based (Multi-Step Outfit Planner)',
+                    integration_mode: 'Agent-based (Multi-Step Tech Combo Planner)',
                     finish_reason: 'stop'
                 };
             } else {

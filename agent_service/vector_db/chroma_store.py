@@ -61,7 +61,7 @@ class ChromaStore:
     """
     Quản lý Vector Database (ChromaDB) phục vụ RAG Agent.
     Quản lý 2 Collections:
-      1. 'zshop_knowledge': Lưu chính sách, hướng dẫn size, phong cách phối đồ.
+      1. 'zshop_knowledge': Lưu chính sách bảo hành 1 đổi 1, hướng dẫn chọn kích cỡ màn hình & combo hệ sinh thái Apple.
       2. 'zshop_products': Toàn bộ 50 sản phẩm ZShop phục vụ Semantic Product Search.
     """
     def __init__(self):

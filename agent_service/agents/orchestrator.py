@@ -18,7 +18,7 @@ class OrchestratorAgent:
     - Điều phối toàn bộ vòng đời tác vụ qua Structured Message Bus.
     - Quản lý quy trình đa tác tử kết hợp Reflection Loop:
         Analyst Agent -> Database Agent (MySQL) + RAG Agent (Vector DB)
-        -> Recommendation Agent (Phối đồ & Cross-sell)
+        -> Recommendation Agent (Combo Công nghệ & Cross-sell)
         -> [Reflection Loop max_retries=2]:
              Reasoning Agent -> Critic Agent (Kiểm định)
              ├── ACCEPT -> Sang Response Agent
@@ -71,7 +71,7 @@ class OrchestratorAgent:
             filters=analysis.get("entities", {})
         )
 
-        # Bước 4: Kích hoạt Recommendation Agent (Gợi ý phối đồ, Cross-sell)
+        # Bước 4: Kích hoạt Recommendation Agent (Gợi ý Combo Hệ sinh thái Apple, Cross-sell)
         primary_products = db_data.get("products", []) or rag_data.get("product_hits", [])
         rec_data = self.recommendation_agent.process(
             primary_products=primary_products,

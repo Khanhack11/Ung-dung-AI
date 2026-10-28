@@ -297,11 +297,11 @@ export interface PaymentEntity {
 export type AIPersonaType = 'STYLIST' | 'FITTING' | 'ORDERS' | 'LOYALTY' | 'BUSINESS';
 
 export interface UserMeasurements {
-  height: number;           // Chiều cao (cm)
-  weight: number;           // Cân nặng (kg)
-  chest?: number;           // Vòng 1 (cm)
-  waist?: number;           // Vòng 2 (cm)
-  preferredFit?: 'tight' | 'regular' | 'loose'; // Ôm / Vừa vặn / Rộng thoải mái
+  height?: number;           // Chiều cao người dùng (cm) - ước lượng tầm vóc cầm máy
+  weight?: number;           // Cân nặng (kg)
+  handSize?: 'compact' | 'medium' | 'large'; // Khổ tay cầm: Nhỏ / Vừa / Lớn
+  usageGrip?: 'one-handed' | 'two-handed';   // Thói quen thao tác: 1 tay / 2 tay
+  preferredFit?: 'tight' | 'regular' | 'loose'; // Ưu tiên: Gọn nhẹ bỏ túi / Tiêu chuẩn / Màn hình cực đại
   gender?: 'nam' | 'nu' | 'unisex';
 }
 
@@ -332,6 +332,7 @@ export interface OutfitCombo {
   totalPrice: number;
   discountPrice?: number;
 }
+export type TechCombo = OutfitCombo; // Alias hỗ trợ Combo Công nghệ ZShop
 
 export interface SizeFittingResult {
   recommendedSize: string;

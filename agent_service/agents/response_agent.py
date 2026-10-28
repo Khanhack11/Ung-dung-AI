@@ -32,7 +32,7 @@ class ResponseAgent:
                 "id": str(p.get("id")),
                 "name": p.get("name", "Sản phẩm ZShop"),
                 "price": int(p.get("price", 0)),
-                "category": p.get("category", "Thời trang"),
+                "category": p.get("category", "Điện thoại iPhone"),
                 "description": p.get("description", "")
             }
             for field in ("stock", "rating", "image_url", "image", "sizes", "colors"):

@@ -7,7 +7,7 @@ from ..vector_db.chroma_store import get_vector_store
 class RecommendationAgent:
     """
     RECOMMENDATION AGENT:
-    - Chuyên trách các thuật toán gợi ý cá nhân hóa, phối đồ thông minh (Outfit Matching).
+    - Chuyên trách các thuật toán gợi ý cá nhân hóa, phối combo công nghệ & hệ sinh thái Apple (Tech Ecosystem Matching).
     - Khám phá sản phẩm mua kèm (Cross-sell) & nâng cấp cao cấp (Up-sell).
     - Xếp hạng đa tiêu chí (Hybrid Scoring: Cosine Similarity + Rating + Popularity).
     """

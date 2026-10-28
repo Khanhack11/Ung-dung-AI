@@ -19,7 +19,7 @@ class AnalystAgent:
         # 1. Trích xuất Intent
         intent = self._detect_intent(text_clean, persona=persona)
 
-        # 2. Trích xuất Occasion (nếu là phối đồ)
+        # 2. Trích xuất Occasion (nếu là combo công nghệ / hệ sinh thái)
         occasion = self._detect_occasion(text_clean)
 
         # 3. Trích xuất Thứ tự sắp xếp và Số lượng yêu cầu

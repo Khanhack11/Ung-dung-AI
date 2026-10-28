@@ -392,7 +392,7 @@ export default function ChatBot({
     }
   };
 
-  // Thêm trọn bộ outfit vào giỏ hàng
+  // Thêm trọn bộ Combo Công nghệ / Hệ sinh thái Apple vào giỏ hàng
   const handleAddOutfitToCart = (combo: { id: string; items: ProductDetail[] }) => {
     if (onAddToCart) {
       combo.items.forEach((item, idx) => {
@@ -403,7 +403,7 @@ export default function ChatBot({
             name: item.name,
             price: Math.round(item.price * 0.92), // Ưu đãi combo 8%
             quantity: 1,
-            size: item.sizes && item.sizes.length > 0 ? item.sizes[0] : 'Freesize',
+            size: item.sizes && item.sizes.length > 0 ? item.sizes[0] : 'Tiêu chuẩn',
             image: itemImage
           });
         }, idx * 100);
@@ -1084,7 +1084,7 @@ export default function ChatBot({
                             Chiều cao: {msg.skillResult.sizeFitting.measurementsUsed.height}cm • Cân nặng: {msg.skillResult.sizeFitting.measurementsUsed.weight}kg
                           </div>
                           <div className="text-[11px] text-slate-600">
-                            Gu mặc: <span className="font-semibold text-emerald-700">{msg.skillResult.sizeFitting.measurementsUsed.fitPreference}</span>
+                            Ưu tiên cầm nắm: <span className="font-semibold text-emerald-700">{msg.skillResult.sizeFitting.measurementsUsed.fitPreference}</span>
                           </div>
                         </div>
                       </div>
